@@ -2,12 +2,11 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Cilindros</title>
+<title>Checklist Cilindros</title>
 <style>
     body {
         font-family: Arial, sans-serif;
-        background-color: #f3f3f3;
-        margin: 0;
+        background-color: #f0f0f0;
         padding: 20px;
     }
     .container {
@@ -18,139 +17,117 @@
         margin: auto;
     }
     .cilindro {
-        background: white;
+        background-color: white;
         padding: 10px;
         border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        box-shadow: 0px 0px 6px rgba(0,0,0,0.2);
         text-align: center;
     }
-    .foto {
+    .cilindro img {
         width: 100%;
-        height: 200px;
-        background-color: #e0e0e0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        height: 180px;
+        object-fit: contain;
+        background-color: #f9f9f9;
+        border: 1px dashed #ccc;
         cursor: pointer;
-        border-radius: 6px;
-        overflow: hidden;
     }
-    .foto img {
+    .cilindro textarea {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    textarea {
-        width: 100%;
-        margin-top: 8px;
-        padding: 5px;
+        height: 50px;
+        margin-top: 5px;
         resize: none;
     }
     button {
-        margin-top: 20px;
+        display: block;
+        margin: 30px auto 0;
         padding: 10px 20px;
         font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        background-color: #0078d4;
+        color: white;
         cursor: pointer;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
+    }
+    button:hover {
+        background-color: #005ea0;
     }
 </style>
 </head>
 <body>
 
-<h1 style="text-align:center;">Cilindros</h1>
+<h2 style="text-align:center;">Checklist Cilindros</h2>
 
 <div class="container">
-    <!-- Criando 6 cilindros -->
-    <div class="cilindro" data-num="1">
-        <div class="foto" onclick="document.getElementById('file1').click()">
-            <img id="preview1" src="" alt="Foto 1">
-        </div>
-        <input type="file" id="file1" accept="image/*" capture="environment" style="display:none" onchange="previewImage(event, 1)">
-        <textarea id="obs1" placeholder="Observação sobre afundamento de válvulas"></textarea>
+    <!-- 6 cilindros -->
+    <div class="cilindro">
+        <input type="file" accept="image/*" capture="environment" style="display:none">
+        <img src="" alt="Foto 1" onclick="this.previousElementSibling.click()">
+        <textarea placeholder="Observação cilindro 1"></textarea>
     </div>
-    <div class="cilindro" data-num="2">
-        <div class="foto" onclick="document.getElementById('file2').click()">
-            <img id="preview2" src="" alt="Foto 2">
-        </div>
-        <input type="file" id="file2" accept="image/*" capture="environment" style="display:none" onchange="previewImage(event, 2)">
-        <textarea id="obs2" placeholder="Observação sobre afundamento de válvulas"></textarea>
+    <div class="cilindro">
+        <input type="file" accept="image/*" capture="environment" style="display:none">
+        <img src="" alt="Foto 2" onclick="this.previousElementSibling.click()">
+        <textarea placeholder="Observação cilindro 2"></textarea>
     </div>
-    <div class="cilindro" data-num="3">
-        <div class="foto" onclick="document.getElementById('file3').click()">
-            <img id="preview3" src="" alt="Foto 3">
-        </div>
-        <input type="file" id="file3" accept="image/*" capture="environment" style="display:none" onchange="previewImage(event, 3)">
-        <textarea id="obs3" placeholder="Observação sobre afundamento de válvulas"></textarea>
+    <div class="cilindro">
+        <input type="file" accept="image/*" capture="environment" style="display:none">
+        <img src="" alt="Foto 3" onclick="this.previousElementSibling.click()">
+        <textarea placeholder="Observação cilindro 3"></textarea>
     </div>
-    <div class="cilindro" data-num="4">
-        <div class="foto" onclick="document.getElementById('file4').click()">
-            <img id="preview4" src="" alt="Foto 4">
-        </div>
-        <input type="file" id="file4" accept="image/*" capture="environment" style="display:none" onchange="previewImage(event, 4)">
-        <textarea id="obs4" placeholder="Observação sobre afundamento de válvulas"></textarea>
+    <div class="cilindro">
+        <input type="file" accept="image/*" capture="environment" style="display:none">
+        <img src="" alt="Foto 4" onclick="this.previousElementSibling.click()">
+        <textarea placeholder="Observação cilindro 4"></textarea>
     </div>
-    <div class="cilindro" data-num="5">
-        <div class="foto" onclick="document.getElementById('file5').click()">
-            <img id="preview5" src="" alt="Foto 5">
-        </div>
-        <input type="file" id="file5" accept="image/*" capture="environment" style="display:none" onchange="previewImage(event, 5)">
-        <textarea id="obs5" placeholder="Observação sobre afundamento de válvulas"></textarea>
+    <div class="cilindro">
+        <input type="file" accept="image/*" capture="environment" style="display:none">
+        <img src="" alt="Foto 5" onclick="this.previousElementSibling.click()">
+        <textarea placeholder="Observação cilindro 5"></textarea>
     </div>
-    <div class="cilindro" data-num="6">
-        <div class="foto" onclick="document.getElementById('file6').click()">
-            <img id="preview6" src="" alt="Foto 6">
-        </div>
-        <input type="file" id="file6" accept="image/*" capture="environment" style="display:none" onchange="previewImage(event, 6)">
-        <textarea id="obs6" placeholder="Observação sobre afundamento de válvulas"></textarea>
+    <div class="cilindro">
+        <input type="file" accept="image/*" capture="environment" style="display:none">
+        <img src="" alt="Foto 6" onclick="this.previousElementSibling.click()">
+        <textarea placeholder="Observação cilindro 6"></textarea>
     </div>
 </div>
 
 <button onclick="gerarPDF()">Gerar PDF</button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script>
-function previewImage(event, num) {
-    const reader = new FileReader();
-    reader.onload = function(){
-        document.getElementById('preview' + num).src = reader.result;
+    document.querySelectorAll('.cilindro input[type="file"]').forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const img = this.nextElementSibling;
+                img.src = URL.createObjectURL(this.files[0]);
+                this.value = ""; // evita o duplo clique
+            }
+        });
+    });
+
+    function gerarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        let x = 10, y = 10, count = 0;
+
+        document.querySelectorAll('.cilindro').forEach(cilindro => {
+            const imgEl = cilindro.querySelector('img');
+            const obs = cilindro.querySelector('textarea').value;
+
+            if (imgEl.src) {
+                doc.addImage(imgEl, 'JPEG', x, y, 60, 40);
+                doc.text(obs, x, y + 45);
+            }
+            x += 65;
+            count++;
+            if (count % 3 === 0) {
+                x = 10;
+                y += 60;
+            }
+        });
+
+        doc.save('cilindros.pdf');
     }
-    reader.readAsDataURL(event.target.files[0]);
-}
-
-async function gerarPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-
-    let x = 10, y = 10;
-    const imgW = 60, imgH = 50; // Tamanho da imagem no PDF
-    const cellW = 65, cellH = 70; // Espaço por cilindro
-
-    for (let i = 1; i <= 6; i++) {
-        const img = document.getElementById('preview' + i).src;
-        const obs = document.getElementById('obs' + i).value || "";
-
-        if (img) {
-            doc.addImage(img, "JPEG", x, y, imgW, imgH);
-        } else {
-            doc.setDrawColor(0);
-            doc.rect(x, y, imgW, imgH);
-        }
-
-        doc.setFontSize(10);
-        doc.text(obs, x, y + imgH + 5, { maxWidth: imgW });
-
-        x += cellW;
-        if (i % 3 === 0) {
-            x = 10;
-            y += cellH;
-        }
-    }
-
-    doc.save("cilindros.pdf");
-}
 </script>
 
 </body>
