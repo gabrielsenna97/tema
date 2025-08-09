@@ -1,316 +1,156 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Registro Fotográfico - 6 Cilindros → PDF 3x3 (A4 Vertical)</title>
-
-<!-- Cropper.js CSS -->
-<link href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet"/>
-
+<meta charset="UTF-8">
+<title>Cilindros</title>
 <style>
-:root{
-  --primary:#0056b3;
-  --bg:#f4f6f8;
-  --card:#fff;
-  --muted:#666;
-}
-body{font-family:Arial,helvetica,sans-serif;background:var(--bg);margin:0;padding:18px;color:#222}
-h1{text-align:center;color:var(--primary);margin-bottom:16px}
-.container{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
-.cilindro{background:var(--card);padding:12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);border:1px solid #ddd;display:flex;flex-direction:column}
-.cilindro h2{margin:0 0 10px;font-size:16px;color:var(--primary);text-align:center}
-.fotos-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
-.foto-box{position:relative;padding-top:100%;border:2px dashed #bbb;border-radius:6px;background:#fafafa;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.foto-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.foto-label{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--muted);font-weight:600;z-index:1;pointer-events:none}
-.remove-btn{position:absolute;top:6px;right:6px;background:rgba(255,255,255,0.85);border:1px solid #ddd;border-radius:4px;padding:2px 6px;display:none;z-index:2;cursor:pointer}
-.foto-box.has-image .remove-btn{display:block}
-input[type=file]{display:none}
-.observacao-label{font-weight:700;margin-bottom:6px;color:#004085}
-.observacao-textarea{min-height:60px;padding:8px;border-radius:6px;border:1px solid #ccc;resize:vertical}
-.actions{margin:18px 0;text-align:center}
-button{cursor:pointer;border:none;padding:10px 16px;border-radius:6px;font-weight:600}
-button.primary{background:var(--primary);color:#fff;margin-right:8px}
-button.danger{background:#c82333;color:#fff}
-#modalCropper{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center}
-#modalCropper .content{background:#fff;padding:14px;border-radius:8px;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center}
-#modalCropper img{max-width:80vw;max-height:60vh;display:block}
-#modalCropper .controls{margin-top:12px}
-small.hint{display:block;margin-top:6px;color:#666;font-size:12px;text-align:center}
-
-/* Styles for PDF preview assembly (kept hidden during UI) */
-.print-sheet{width:210mm;height:297mm;background:white;padding:10mm;box-sizing:border-box;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:6mm}
-.pdf-block{border:1px solid #111;padding:4mm;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;background:#fff}
-.pdf-title{display:block;text-align:center;padding:2px 6px;border-radius:6px;background:rgba(0,0,0,0.06);font-weight:700;margin-bottom:4px}
-.pdf-photos{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;flex:1}
-.pdf-photos img{width:100%;height:100%;object-fit:cover;border:1px solid #ccc}
-.pdf-obs{margin-top:6px;font-size:12px;color:#111;min-height:18mm;overflow:hidden}
-.hidden{display:none!important}
-@media (max-width:720px){.container{grid-template-columns:1fr}}
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .container { display: flex; flex-wrap: wrap; gap: 20px; }
+    .cilindro {
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 300px;
+    }
+    .cilindro img {
+        width: 100%;
+        height: auto;
+        display: block;
+        margin-bottom: 5px;
+    }
+    textarea {
+        width: 100%;
+        height: 50px;
+    }
 </style>
 </head>
 <body>
 
-<h1>Registro Fotográfico — 6 Cilindros (Gerar PDF 3×3 A4 Vertical)</h1>
-
-<main class="container" id="containerCilindros">
-  <!-- Cilindros serão gerados por script -->
-</main>
-
-<div class="actions">
-  <button id="btnGerarPDF" class="primary">Gerar PDF (A4 Vertical, layout 3×3)</button>
-  <button id="btnLimparTudo" class="danger">Limpar Tudo</button>
-  <div class="hint"><small>Use o ícone na caixa para adicionar foto. Clique no botão de remover para excluir uma imagem.</small></div>
-</div>
-
-<!-- Modal Cropper -->
-<div id="modalCropper" role="dialog" aria-modal="true">
-  <div class="content">
-    <h3 style="margin:0 0 8px">Editar / Cortar Imagem</h3>
-    <img id="imageCropper" alt="Imagem para edição">
-    <div class="controls">
-      <button id="btnCropConfirm" class="primary">Confirmar</button>
-      <button id="btnCropCancel" style="margin-left:8px">Cancelar</button>
+<h1>Registro de Cilindros</h1>
+<div class="container">
+    <div class="cilindro">
+        <h2>Cilindro 1</h2>
+        <input type="file" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observações"></textarea>
     </div>
-  </div>
+    <div class="cilindro">
+        <h2>Cilindro 2</h2>
+        <input type="file" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observações"></textarea>
+    </div>
+    <div class="cilindro">
+        <h2>Cilindro 3</h2>
+        <input type="file" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observações"></textarea>
+    </div>
+    <div class="cilindro">
+        <h2>Cilindro 4</h2>
+        <input type="file" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observações"></textarea>
+    </div>
+    <div class="cilindro">
+        <h2>Cilindro 5</h2>
+        <input type="file" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observações"></textarea>
+    </div>
+    <div class="cilindro">
+        <h2>Cilindro 6</h2>
+        <input type="file" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observações"></textarea>
+    </div>
 </div>
 
-<!-- libs -->
-<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<button id="gerarPDF">Gerar PDF</button>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <script>
-/* Config e criação dinâmica dos 6 cilindros */
-const TOTAL = 6;
-const container = document.getElementById('containerCilindros');
-
-function criarCilindroHTML(n){
-  return `
-  <section class="cilindro" data-cil="${n}">
-    <h2>${n}º Cilindro</h2>
-    <div class="fotos-grid">
-      ${[0,1,2,3].map(i=>`
-        <label class="foto-box" data-index="${i}" tabindex="0">
-          <span class="foto-label">Foto ${i+1}</span>
-          <input type="file" accept="image/*" capture="environment">
-          <img alt="">
-          <button type="button" class="remove-btn" title="Remover Foto">&times;</button>
-        </label>
-      `).join('')}
-    </div>
-    <label class="observacao-label" for="obs${n}">Observação (afundamento de válvulas):</label>
-    <textarea id="obs${n}" class="observacao-textarea" placeholder="Descreva observação de afundamento..."></textarea>
-  </section>
-  `;
+function loadImage(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+    });
 }
 
-container.innerHTML = Array.from({length:TOTAL}, (_,i)=>criarCilindroHTML(i+1)).join('');
-
-let cropper = null;
-let currentInput = null;
-let currentLabel = null;
-
-// modal refs
-const modal = document.getElementById('modalCropper');
-const imageCropper = document.getElementById('imageCropper');
-const btnConfirm = document.getElementById('btnCropConfirm');
-const btnCancel = document.getElementById('btnCropCancel');
-
-// Delegação: clique para remover
-container.addEventListener('click', e=>{
-  if(e.target.classList.contains('remove-btn')){
-    const label = e.target.closest('.foto-box');
-    const img = label.querySelector('img');
-    const input = label.querySelector('input[type=file]');
-    img.src = '';
-    label.classList.remove('has-image');
-    label.querySelector('.foto-label').style.display = 'block';
-    input.value = '';
-  }
-});
-
-// Delegação: abrir file quando clicar na caixa (label já contém input invisível)
-container.addEventListener('click', e=>{
-  const box = e.target.closest('.foto-box');
-  if(!box) return;
-  // se clicou no próprio label (não no remove)
-  if(e.target.classList.contains('remove-btn')) return;
-  const input = box.querySelector('input[type=file]');
-  input.click();
-});
-
-// Abrir cropper após seleção de arquivo
-container.addEventListener('change', e=>{
-  if(!e.target.matches('input[type=file]')) return;
-  const file = e.target.files[0];
-  if(!file) return;
-  currentInput = e.target;
-  currentLabel = e.target.closest('.foto-box');
-  const reader = new FileReader();
-  reader.onload = ev => {
-    imageCropper.src = ev.target.result;
-    showModal();
-  };
-  reader.readAsDataURL(file);
-});
-
-// Funções modal & cropper
-function showModal(){
-  modal.style.display = 'flex';
-  cropper = new Cropper(imageCropper,{
-    aspectRatio: 1,
-    viewMode: 1,
-    autoCropArea: 1,
-    background: false,
-    movable: true,
-    zoomable: true
-  });
-}
-function hideModal(){
-  modal.style.display = 'none';
-  if(cropper){ cropper.destroy(); cropper=null; }
-}
-
-// Confirm crop
-btnConfirm.addEventListener('click', ()=>{
-  if(!cropper) return;
-  cropper.getCroppedCanvas({width:800, height:800, imageSmoothingQuality:'high'}).toBlob(blob=>{
-    const url = URL.createObjectURL(blob);
-    const imgEl = currentLabel.querySelector('img');
-    imgEl.src = url;
-    currentLabel.classList.add('has-image');
-    currentLabel.querySelector('.foto-label').style.display = 'none';
-    // colocar blob como arquivo no input (para reaproveitar)
-    const file = new File([blob], 'foto_cortada.png', {type:'image/png'});
-    const dt = new DataTransfer();
-    dt.items.add(file);
-    currentInput.files = dt.files;
-    hideModal();
-  }, 'image/png');
-});
-btnCancel.addEventListener('click', ()=>{
-  if(currentInput) currentInput.value = '';
-  hideModal();
-});
-
-// fechar modal com Esc
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') hideModal(); });
-
-/* Gerar PDF (A4 vertical, layout 3x3) */
-const { jsPDF } = window.jspdf;
-
-document.getElementById('btnGerarPDF').addEventListener('click', async ()=>{
-  // montar container print (oculto) com layout A4
-  const blocksPerPage = 9;
-  const pdfPages = [];
-  // coletar dados dos cilindros
-  const cilindros = [];
-  for(let i=1;i<=TOTAL;i++){
-    const block = {title: `${i}º Cilindro`, photos: [], obs: document.getElementById(`obs${i}`).value || ''};
-    const sect = container.querySelector(`.cilindro[data-cil="${i}"]`);
-    const imgs = sect.querySelectorAll('.foto-box img');
-    imgs.forEach(img=>block.photos.push(img.src || ''));
-    cilindros.push(block);
-  }
-
-  // criar elemento temporário (visível no DOM, mas fora da tela) para html2canvas
-  const temp = document.createElement('div');
-  temp.className = 'print-sheet';
-  // garantir que não apareça e não quebre layout
-  Object.assign(temp.style, {position:'fixed',left:'-9999px',top:'-9999px',width:'210mm',height:'297mm',background:'#fff',padding:'10mm',boxSizing:'border-box',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gridAutoRows:'1fr',gap:'6mm'});
-  document.body.appendChild(temp);
-
-  // preencher 3x3, se sobrar espaços vazios cria blocos em branco
-  for(let i=0;i<blocksPerPage;i++){
-    const idx = i; // index on page
-    const blockData = cilindros[i] || null; // only first page for 6
-    const blockEl = document.createElement('div');
-    blockEl.className = 'pdf-block';
-    blockEl.style.boxSizing = 'border-box';
-    // título
-    const title = document.createElement('div');
-    title.className = 'pdf-title';
-    title.textContent = blockData ? blockData.title : '';
-    blockEl.appendChild(title);
-    // photos grid 2x2
-    const photosWrap = document.createElement('div');
-    photosWrap.className = 'pdf-photos';
-    photosWrap.style.minHeight = '50mm';
-    // if blockData: push 4 images (or placeholders)
-    if(blockData){
-      for(let p=0;p<4;p++){
-        const im = document.createElement('img');
-        im.alt = `Foto ${p+1}`;
-        if(blockData.photos[p]){
-          im.src = blockData.photos[p];
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    for(let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+            ctx.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
         } else {
-          // blank placeholder (transparent)
-          im.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="100%" height="100%" fill="#f8f8f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#bbb" font-size="18">Sem foto</text></svg>`);
+            line = testLine;
         }
-        photosWrap.appendChild(im);
-      }
-      blockEl.appendChild(photosWrap);
-      // observação
-      const obs = document.createElement('div');
-      obs.className = 'pdf-obs';
-      obs.textContent = blockData.obs || '';
-      obs.style.whiteSpace = 'pre-wrap';
-      blockEl.appendChild(obs);
-    } else {
-      // vazio
-      for(let p=0;p<4;p++){
-        const im = document.createElement('img');
-        im.alt = 'vazio';
-        im.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="100%" height="100%" fill="#fff"/></svg>`);
-        photosWrap.appendChild(im);
-      }
-      blockEl.appendChild(photosWrap);
-      const obs = document.createElement('div'); obs.className='pdf-obs'; obs.textContent=''; blockEl.appendChild(obs);
     }
-    temp.appendChild(blockEl);
-  }
+    ctx.fillText(line, x, y);
+}
 
-  // Use html2canvas to render the whole A4 temp element
-  try {
-    // scale alto para melhor qualidade
-    const canvas = await html2canvas(temp, {scale:2, useCORS:true, allowTaint:true, logging:false, backgroundColor:'#ffffff'});
-    const imgData = canvas.toDataURL('image/jpeg',0.92);
-
-    // criar PDF A4 vertical em mm
-    const pdf = new jsPDF({unit:'mm', format:'a4', orientation:'portrait'});
-    const pdfW = pdf.internal.pageSize.getWidth();
-    const pdfH = pdf.internal.pageSize.getHeight();
-
-    // calcular proporção da imagem em mm
-    // convert canvas pixel sizes proporitionally to PDF mm
-    // desenhar imagem ajustada a página inteira (sem margens extras)
-    pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
-    pdf.save('cilindros_3x3_A4.pdf');
-  } catch(err){
-    console.error(err);
-    alert('Erro ao gerar PDF. Veja console para mais detalhes.');
-  } finally {
-    // cleanup temporário e liberar object URLs
-    setTimeout(()=>{ document.body.removeChild(temp); }, 300);
-  }
+// CORREÇÃO DO DUPLO CLIQUE
+document.querySelectorAll('input[type=file]').forEach(input => {
+    input.addEventListener('change', function(){
+        if(this.files && this.files[0]){
+            const img = this.nextElementSibling;
+            img.src = URL.createObjectURL(this.files[0]);
+            this.value = ""; // <-- resolve o problema
+        }
+    });
 });
 
-/* botão limpar tudo */
-document.getElementById('btnLimparTudo').addEventListener('click', ()=>{
-  // limpar fotos e observações
-  const boxes = container.querySelectorAll('.foto-box');
-  boxes.forEach(b=>{
-    const img = b.querySelector('img');
-    const input = b.querySelector('input[type=file]');
-    img.src = '';
-    b.classList.remove('has-image');
-    const lbl = b.querySelector('.foto-label'); if(lbl) lbl.style.display='block';
-    if(input) input.value = '';
-  });
-  for(let i=1;i<=TOTAL;i++) document.getElementById(`obs${i}`).value = '';
-  alert('Tudo limpo.');
+document.getElementById('gerarPDF').addEventListener('click', async()=>{
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const blocos = document.querySelectorAll('.cilindro');
+    let col = 0, row = 0;
+    const colWidth = 60;
+    const rowHeight = 90;
+
+    for(let i=0; i<blocos.length; i++){
+        const bloco = blocos[i];
+        const canvas = document.createElement('canvas');
+        canvas.width = 350;
+        canvas.height = 350;
+        const ctx = canvas.getContext('2d');
+
+        ctx.font = "14px Arial";
+        ctx.fillText(bloco.querySelector('h2').textContent, 10, 18);
+
+        const imgs = bloco.querySelectorAll('img');
+        let px = 0, py = 25;
+        for(let j=0; j<imgs.length; j++){
+            if(imgs[j].src){
+                const img = await loadImage(imgs[j].src);
+                ctx.drawImage(img, px, py, 170, 120);
+            }
+            px += 175;
+            if(j === 1){ px = 0; py += 125; }
+        }
+
+        ctx.font = "11px Arial";
+        wrapText(ctx, bloco.querySelector('.obs').value, 10, 330, 320, 13);
+
+        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        const posX = col * colWidth + 10;
+        const posY = row * rowHeight + 10;
+        pdf.addImage(imgData, "JPEG", posX, posY, colWidth, rowHeight);
+
+        col++;
+        if(col === 3){ col = 0; row++; }
+    }
+
+    pdf.save("cilindros.pdf");
 });
 </script>
 
