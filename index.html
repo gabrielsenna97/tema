@@ -93,9 +93,8 @@ function criarCilindroHTML(n){
     <div class="fotos-grid">
       ${[0,1,2,3].map(i=>`
         <label class="foto-box" data-index="${i}" tabindex="0">
-          <span class="foto-label">📷</span>
-          <!-- input ajustado para permitir escolha câmera ou galeria -->
-          <input type="file" accept="image/*" capture>
+          <span class="foto-label">Foto ${i+1}</span>
+          <input type="file" accept="image/*">
           <img alt="">
           <button type="button" class="remove-btn" title="Remover Foto">&times;</button>
         </label>
@@ -136,6 +135,7 @@ container.addEventListener('click', e=>{
 container.addEventListener('click', e=>{
   const box = e.target.closest('.foto-box');
   if(!box) return;
+  // se clicou no próprio label (não no remove)
   if(e.target.classList.contains('remove-btn')) return;
   const input = box.querySelector('input[type=file]');
   input.click();
@@ -218,21 +218,27 @@ document.getElementById('btnGerarPDF').addEventListener('click', async ()=>{
   // criar elemento temporário (visível no DOM, mas fora da tela) para html2canvas
   const temp = document.createElement('div');
   temp.className = 'print-sheet';
+  // garantir que não apareça e não quebre layout
   Object.assign(temp.style, {position:'fixed',left:'-9999px',top:'-9999px',width:'210mm',height:'297mm',background:'#fff',padding:'10mm',boxSizing:'border-box',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gridAutoRows:'1fr',gap:'6mm'});
   document.body.appendChild(temp);
 
+  // preencher 3x3, se sobrar espaços vazios cria blocos em branco
   for(let i=0;i<blocksPerPage;i++){
-    const blockData = cilindros[i] || null;
+    const idx = i; // index on page
+    const blockData = cilindros[i] || null; // only first page for 6
     const blockEl = document.createElement('div');
     blockEl.className = 'pdf-block';
     blockEl.style.boxSizing = 'border-box';
+    // título
     const title = document.createElement('div');
     title.className = 'pdf-title';
     title.textContent = blockData ? blockData.title : '';
     blockEl.appendChild(title);
+    // photos grid 2x2
     const photosWrap = document.createElement('div');
     photosWrap.className = 'pdf-photos';
     photosWrap.style.minHeight = '50mm';
+    // if blockData: push 4 images (or placeholders)
     if(blockData){
       for(let p=0;p<4;p++){
         const im = document.createElement('img');
@@ -240,17 +246,20 @@ document.getElementById('btnGerarPDF').addEventListener('click', async ()=>{
         if(blockData.photos[p]){
           im.src = blockData.photos[p];
         } else {
+          // blank placeholder (transparent)
           im.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="100%" height="100%" fill="#f8f8f8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#bbb" font-size="18">Sem foto</text></svg>`);
         }
         photosWrap.appendChild(im);
       }
       blockEl.appendChild(photosWrap);
+      // observação
       const obs = document.createElement('div');
       obs.className = 'pdf-obs';
       obs.textContent = blockData.obs || '';
       obs.style.whiteSpace = 'pre-wrap';
       blockEl.appendChild(obs);
     } else {
+      // vazio
       for(let p=0;p<4;p++){
         const im = document.createElement('img');
         im.alt = 'vazio';
@@ -263,26 +272,34 @@ document.getElementById('btnGerarPDF').addEventListener('click', async ()=>{
     temp.appendChild(blockEl);
   }
 
+  // Use html2canvas to render the whole A4 temp element
   try {
+    // scale alto para melhor qualidade
     const canvas = await html2canvas(temp, {scale:2, useCORS:true, allowTaint:true, logging:false, backgroundColor:'#ffffff'});
     const imgData = canvas.toDataURL('image/jpeg',0.92);
 
+    // criar PDF A4 vertical em mm
     const pdf = new jsPDF({unit:'mm', format:'a4', orientation:'portrait'});
     const pdfW = pdf.internal.pageSize.getWidth();
     const pdfH = pdf.internal.pageSize.getHeight();
 
+    // calcular proporção da imagem em mm
+    // convert canvas pixel sizes proporitionally to PDF mm
+    // desenhar imagem ajustada a página inteira (sem margens extras)
     pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
     pdf.save('cilindros_3x3_A4.pdf');
   } catch(err){
     console.error(err);
     alert('Erro ao gerar PDF. Veja console para mais detalhes.');
   } finally {
+    // cleanup temporário e liberar object URLs
     setTimeout(()=>{ document.body.removeChild(temp); }, 300);
   }
 });
 
 /* botão limpar tudo */
 document.getElementById('btnLimparTudo').addEventListener('click', ()=>{
+  // limpar fotos e observações
   const boxes = container.querySelectorAll('.foto-box');
   boxes.forEach(b=>{
     const img = b.querySelector('img');
