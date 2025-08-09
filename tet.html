@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Teste Cilindros</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+    body { font-family: Arial, sans-serif; }
+    .cilindro { border: 1px solid #ccc; padding: 10px; margin: 10px; display: inline-block; vertical-align: top; }
+    img { width: 100px; height: 100px; object-fit: cover; display: block; margin-bottom: 5px; }
+</style>
+</head>
+<body>
+
+<div id="container">
+    <!-- Exemplo de 6 cilindros -->
+    <div class="cilindro">
+        <h2>Cilindro 1</h2>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observação"></textarea>
+    </div>
+
+    <div class="cilindro">
+        <h2>Cilindro 2</h2>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observação"></textarea>
+    </div>
+
+    <div class="cilindro">
+        <h2>Cilindro 3</h2>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observação"></textarea>
+    </div>
+
+    <div class="cilindro">
+        <h2>Cilindro 4</h2>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observação"></textarea>
+    </div>
+
+    <div class="cilindro">
+        <h2>Cilindro 5</h2>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observação"></textarea>
+    </div>
+
+    <div class="cilindro">
+        <h2>Cilindro 6</h2>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <input type="file" class="fileInput" accept="image/*">
+        <img>
+        <textarea class="obs" placeholder="Observação"></textarea>
+    </div>
+</div>
+
+<button id="gerarPDF">Gerar PDF</button>
+
+<script>
+// corrigir duplo clique
+document.querySelectorAll('.fileInput').forEach(input => {
+    input.addEventListener('change', function(){
+        if(this.files && this.files[0]){
+            const img = this.nextElementSibling;
+            img.src = URL.createObjectURL(this.files[0]);
+            this.value = ""; // evita precisar clicar 2 vezes
+        }
+    });
+});
+
+function loadImage(url){
+    return new Promise(resolve=>{
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = ()=>resolve(img);
+        img.src = url;
+    });
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+    const words = text.split(' ');
+    let line = '';
+    for(let n = 0; n < words.length; n++){
+        let testLine = line + words[n] + ' ';
+        let metrics = ctx.measureText(testLine);
+        let testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+            ctx.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+        }
+        else {
+            line = testLine;
+        }
+    }
+    ctx.fillText(line, x, y);
+}
+
+document.getElementById('gerarPDF').addEventListener('click', async()=>{
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const blocos = document.querySelectorAll('.cilindro');
+    let col = 0, row = 0;
+    const colWidth = 60;   // largura de cada bloco no PDF
+    const rowHeight = 90;  // altura de cada bloco no PDF
+
+    for(let i=0; i<blocos.length; i++){
+        const bloco = blocos[i];
+        const canvas = document.createElement('canvas');
+        canvas.width = 350;
+        canvas.height = 350;
+        const ctx = canvas.getContext('2d');
+
+        // título
+        ctx.font = "14px Arial";
+        ctx.fillText(bloco.querySelector('h2').textContent, 10, 18);
+
+        // imagens
+        const imgs = bloco.querySelectorAll('img');
+        let px = 0, py = 25;
+        for(let j=0; j<imgs.length; j++){
+            if(imgs[j].src){
+                const img = await loadImage(imgs[j].src);
+                ctx.drawImage(img, px, py, 170, 120);
+            }
+            px += 175;
+            if(j === 1){ px = 0; py += 125; }
+        }
+
+        // observação
+        ctx.font = "11px Arial";
+        wrapText(ctx, bloco.querySelector('.obs').value, 10, 330, 320, 13);
+
+        // adiciona no PDF
+        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        const posX = col * colWidth + 10;
+        const posY = row * rowHeight + 10;
+        pdf.addImage(imgData, "JPEG", posX, posY, colWidth, rowHeight);
+
+        col++;
+        if(col === 3){ col = 0; row++; }
+    }
+
+    pdf.save("cilindros.pdf");
+});
+</script>
+</body>
+</html>
