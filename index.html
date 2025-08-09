@@ -2,180 +2,176 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Cilindros</title>
+<title>Registro Fotográfico — 6 Cilindros</title>
 <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f3f3f3; }
-    h1 { text-align: center; }
-    .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-    .cilindro {
-        border: 1px solid #ccc;
-        background: white;
-        padding: 10px;
-        width: 300px;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f3f3f3;
+        padding: 20px;
     }
-    .cilindro img {
-        width: 100%;
-        height: auto;
-        display: block;
-        margin-bottom: 5px;
-        border-radius: 4px;
-        border: 1px solid #ddd;
+    h1 {
+        text-align: center;
+        color: #004080;
+    }
+    .container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        justify-items: center;
+    }
+    .cilindro {
+        background: white;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 0 6px rgba(0,0,0,0.15);
+        width: 280px;
+    }
+    .grid-fotos {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+    }
+    .foto {
+        border: 2px dashed #ccc;
+        border-radius: 6px;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        background-color: #fafafa;
+    }
+    .foto img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    .foto span {
+        color: #777;
+        font-size: 14px;
     }
     textarea {
         width: 100%;
-        height: 50px;
-        resize: none;
+        margin-top: 5px;
         border-radius: 4px;
         border: 1px solid #ccc;
         padding: 5px;
+        font-size: 12px;
+        resize: vertical;
+    }
+    .botoes {
+        text-align: center;
+        margin-top: 15px;
     }
     button {
-        display: block;
-        margin: 20px auto;
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #0078d4;
-        color: white;
+        padding: 8px 12px;
+        margin: 5px;
         border: none;
-        border-radius: 6px;
+        border-radius: 4px;
         cursor: pointer;
+        font-size: 14px;
     }
-    button:hover {
-        background-color: #005a9e;
+    .gerar {
+        background-color: #0066cc;
+        color: white;
+    }
+    .limpar {
+        background-color: #cc0000;
+        color: white;
+    }
+    small {
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+        color: #555;
     }
 </style>
 </head>
 <body>
 
-<h1>Registro de Cilindros</h1>
-<div class="container">
-    <div class="cilindro">
-        <h2>Cilindro 1</h2>
-        <input type="file" accept="image/*">
-        <img>
-        <textarea class="obs" placeholder="Observações"></textarea>
-    </div>
-    <div class="cilindro">
-        <h2>Cilindro 2</h2>
-        <input type="file" accept="image/*">
-        <img>
-        <textarea class="obs" placeholder="Observações"></textarea>
-    </div>
-    <div class="cilindro">
-        <h2>Cilindro 3</h2>
-        <input type="file" accept="image/*">
-        <img>
-        <textarea class="obs" placeholder="Observações"></textarea>
-    </div>
-    <div class="cilindro">
-        <h2>Cilindro 4</h2>
-        <input type="file" accept="image/*">
-        <img>
-        <textarea class="obs" placeholder="Observações"></textarea>
-    </div>
-    <div class="cilindro">
-        <h2>Cilindro 5</h2>
-        <input type="file" accept="image/*">
-        <img>
-        <textarea class="obs" placeholder="Observações"></textarea>
-    </div>
-    <div class="cilindro">
-        <h2>Cilindro 6</h2>
-        <input type="file" accept="image/*">
-        <img>
-        <textarea class="obs" placeholder="Observações"></textarea>
-    </div>
+<h1>Registro Fotográfico — 6 Cilindros (Gerar PDF 3×3 A4 Vertical)</h1>
+<div class="container" id="container"></div>
+
+<div class="botoes">
+    <button class="gerar">Gerar PDF (A4 Vertical, layout 3×3)</button>
+    <button class="limpar" onclick="limparTudo()">Limpar Tudo</button>
 </div>
+<small>Use o ícone na caixa para adicionar foto. Clique no botão de remover para excluir uma imagem.</small>
 
-<button id="gerarPDF">Gerar PDF</button>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-function loadImage(src) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-        img.src = src;
-    });
-}
+function criarCilindro(numero) {
+    let div = document.createElement('div');
+    div.className = 'cilindro';
 
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-    const words = text.split(' ');
-    let line = '';
-    for(let n = 0; n < words.length; n++) {
-        const testLine = line + words[n] + ' ';
-        const metrics = ctx.measureText(testLine);
-        const testWidth = metrics.width;
-        if (testWidth > maxWidth && n > 0) {
-            ctx.fillText(line, x, y);
-            line = words[n] + ' ';
-            y += lineHeight;
-        } else {
-            line = testLine;
-        }
-    }
-    ctx.fillText(line, x, y);
-}
+    let titulo = document.createElement('h3');
+    titulo.textContent = `${numero}º Cilindro`;
+    div.appendChild(titulo);
 
-// CORREÇÃO DO DUPLO CLIQUE
-document.querySelectorAll('input[type=file]').forEach(input => {
-    input.addEventListener('change', function(){
-        if(this.files && this.files[0]){
-            const img = this.nextElementSibling;
-            img.src = URL.createObjectURL(this.files[0]);
-            this.value = ""; // <-- resolve o problema
-        }
-    });
-});
+    let grid = document.createElement('div');
+    grid.className = 'grid-fotos';
 
-document.getElementById('gerarPDF').addEventListener('click', async()=>{
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p", "mm", "a4");
+    for (let i = 1; i <= 4; i++) {
+        let box = document.createElement('div');
+        box.className = 'foto';
 
-    const blocos = document.querySelectorAll('.cilindro');
-    let col = 0, row = 0;
-    const colWidth = 60;  // largura no PDF
-    const rowHeight = 90; // altura no PDF
+        let img = document.createElement('img');
+        img.style.display = 'none';
 
-    for(let i=0; i<blocos.length; i++){
-        const bloco = blocos[i];
-        const canvas = document.createElement('canvas');
-        canvas.width = 350;
-        canvas.height = 350;
-        const ctx = canvas.getContext('2d');
+        let texto = document.createElement('span');
+        texto.textContent = `Foto ${i}`;
 
-        ctx.font = "14px Arial";
-        ctx.fillText(bloco.querySelector('h2').textContent, 10, 18);
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.style.display = 'none';
 
-        const imgs = bloco.querySelectorAll('img');
-        let px = 0, py = 25;
-        for(let j=0; j<imgs.length; j++){
-            if(imgs[j].src){
-                const img = await loadImage(imgs[j].src);
-                ctx.drawImage(img, px, py, 170, 120);
+        // clique único para abrir seletor
+        box.addEventListener('click', () => input.click());
+
+        input.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                let reader = new FileReader();
+                reader.onload = (ev) => {
+                    img.src = ev.target.result;
+                    img.style.display = 'block';
+                    texto.style.display = 'none';
+                }
+                reader.readAsDataURL(e.target.files[0]);
             }
-            px += 175;
-            if(j === 1){ px = 0; py += 125; }
-        }
+        });
 
-        ctx.font = "11px Arial";
-        wrapText(ctx, bloco.querySelector('.obs').value, 10, 330, 320, 13);
-
-        const imgData = canvas.toDataURL("image/jpeg", 1.0);
-        const posX = col * colWidth + 10;
-        const posY = row * rowHeight + 10;
-        pdf.addImage(imgData, "JPEG", posX, posY, colWidth, rowHeight);
-
-        col++;
-        if(col === 3){ col = 0; row++; }
+        box.appendChild(img);
+        box.appendChild(texto);
+        box.appendChild(input);
+        grid.appendChild(box);
     }
 
-    pdf.save("cilindros.pdf");
-});
+    div.appendChild(grid);
+
+    let obs = document.createElement('textarea');
+    obs.placeholder = 'Descreva observação de afundamento...';
+    div.appendChild(obs);
+
+    return div;
+}
+
+for (let i = 1; i <= 6; i++) {
+    document.getElementById('container').appendChild(criarCilindro(i));
+}
+
+function limparTudo() {
+    document.querySelectorAll('.foto img').forEach(img => {
+        img.src = '';
+        img.style.display = 'none';
+    });
+    document.querySelectorAll('.foto span').forEach(span => {
+        span.style.display = 'block';
+    });
+    document.querySelectorAll('textarea').forEach(txt => txt.value = '');
+    document.querySelectorAll('.foto input').forEach(inp => inp.value = '');
+}
 </script>
 
 </body>
