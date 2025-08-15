@@ -6,16 +6,9 @@
 <title>Medição de Válvulas do Scania-550</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  line-height: 1.6;
-  background-color: #d0f0c0;
-}
+body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; background-color: #d0f0c0; }
 h1,h2,h3{ color:#333; margin-top:20px; margin-bottom:10px; }
 h1{ font-size:24px; text-align:center; border-bottom:2px solid #333; padding-bottom:10px; }
-h2{ font-size:20px; margin-top:30px; margin-bottom:15px; text-align:center; }
-h3{ font-size:16px; text-align:center; margin:15px 0; }
 .valve-container{ display:flex; flex-wrap:wrap; justify-content:space-between; margin-bottom:20px; }
 .valve-section{ border:1px solid #ddd; padding:15px; margin-bottom:20px; width:32%; box-sizing:border-box; background-color:#fff; border-radius:10px; }
 .valve-type{ font-weight:bold; margin-top:10px; text-align:center; padding:5px; border-radius:4px; background-color:white; color:black; }
@@ -33,50 +26,12 @@ textarea{ width:100%; height:100px; padding:10px; text-align:left; resize:vertic
 button{ background-color:#2e8b57; color:white; border:none; padding:10px 20px; margin:0 10px; font-size:16px; border-radius:4px; cursor:pointer; }
 button.clear-btn{ background-color:#ff6b6b; }
 .photo-box{
-  width:120px;
-  height:120px;
-  border:2px dashed #999;
-  margin:10px auto;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  font-size:12px;
-  color:#666;
-  position:relative;
-  background-size:cover;
-  background-position:center;
-  overflow:hidden;
-  border-radius:10px;
+  width:120px; height:120px; border:2px dashed #999; margin:10px auto; display:flex; align-items:center; justify-content:center; text-align:center; font-size:12px; color:#666; position:relative; background-size:cover; background-position:center; overflow:hidden; border-radius:10px;
 }
 .photo-box input[type="file"]{ position:absolute; width:100%; height:100%; opacity:0; cursor:pointer; }
 .remove-photo{ display:inline-block; margin-left:5px; background:#ff4d4d; color:#fff; border:none; padding:2px 5px; font-size:10px; cursor:pointer; border-radius:4px; vertical-align:top; }
-
-.photo-label {
-  position:absolute;
-  bottom:0;
-  width:100%;
-  text-align:center;
-  background-color:white;
-  color:black;
-  font-weight:bold;
-  font-size:12px;
-  border-top-left-radius:5px;
-  border-top-right-radius:5px;
-  padding:2px 0;
-}
-
-.cilindro-label {
-  text-align:center;
-  font-weight:bold;
-  color:black;
-  background-color:white;
-  border-radius:10px;
-  padding:5px;
-  margin-bottom:10px;
-  font-size:16px;
-}
-
+.photo-label { position:absolute; bottom:0; width:100%; text-align:center; background-color:white; color:black; font-weight:bold; font-size:12px; border-top-left-radius:5px; border-top-right-radius:5px; padding:2px 0; }
+.cilindro-label { text-align:center; font-weight:bold; color:black; background-color:white; border-radius:10px; padding:5px; margin-bottom:10px; font-size:16px; }
 @media(max-width:900px){ .valve-section{ width:100%; } }
 </style>
 </head>
@@ -211,6 +166,10 @@ document.getElementById('generateJpg').addEventListener('click', async function(
 
     for(let j=0;j<4;j++){
       const box=document.getElementById(fotos[j]);
+      const valInputId = fotos[j].replace('photo','').replace('_','_'); 
+      const inputValEl = document.getElementById(valInputId);
+      const val = inputValEl ? parseFloat(inputValEl.value.replace(',', '.')) : null;
+
       if(box && box.style.backgroundImage){
         const imgUrl=box.style.backgroundImage.slice(5,-2);
         const imgEl=new Image();
@@ -218,16 +177,10 @@ document.getElementById('generateJpg').addEventListener('click', async function(
         await new Promise(resolve=>imgEl.onload=resolve);
         ctxCil.drawImage(imgEl,pos[j][0],pos[j][1],imgSize/2,imgHeight/2);
 
-        // Caixa branca apenas no texto da legenda
-        const text=legendas[j];
-        ctxCil.font="bold 30px Arial";
-        const textWidth=ctxCil.measureText(text).width;
-        const padding=10;
-        const rectWidth=textWidth+padding*2;
+        const rectWidth=imgSize/2;
         const rectHeight=40;
-        const rectX=pos[j][0]+(imgSize/4)-rectWidth/2;
-        const rectY=pos[j][1]+imgHeight/2 - rectHeight - 5;
-
+        const rectX=pos[j][0];
+        const rectY=pos[j][1]+imgHeight/2 - rectHeight;
         ctxCil.fillStyle="white";
         ctxCil.strokeStyle="black";
         ctxCil.lineWidth=2;
@@ -235,31 +188,52 @@ document.getElementById('generateJpg').addEventListener('click', async function(
         ctxCil.strokeRect(rectX,rectY,rectWidth,rectHeight);
 
         ctxCil.fillStyle="black";
+        ctxCil.font="bold 30px Arial";
         ctxCil.textAlign="center";
         ctxCil.textBaseline="middle";
-        ctxCil.fillText(text, rectX+rectWidth/2, rectY+rectHeight/2);
+        ctxCil.fillText(legendas[j], rectX+rectWidth/2, rectY + rectHeight/2);
+
+        if(val !== null && val >= 67.50){
+          const desc = `AFUNDAMENTO (${val.toFixed(2).replace('.', ',')}mm)`;
+          ctxCil.font = "bold 28px Arial";
+          ctxCil.fillStyle = "red";
+
+          const metrics = ctxCil.measureText(desc);
+          const padding = 10;
+          const txtWidth = metrics.width + padding*2;
+          const txtHeight = 40;
+          const txtX = pos[j][0] + (imgSize/2 - txtWidth)/2;
+          const txtY = rectY - txtHeight - 10;
+          ctxCil.fillStyle="white";
+          ctxCil.fillRect(txtX, txtY, txtWidth, txtHeight);
+          ctxCil.strokeStyle="black";
+          ctxCil.strokeRect(txtX, txtY, txtWidth, txtHeight);
+
+          ctxCil.fillStyle = "red";
+          ctxCil.textAlign="center";
+          ctxCil.textBaseline="middle";
+          ctxCil.fillText(desc, txtX + txtWidth/2, txtY + txtHeight/2);
+        }
       }
     }
 
-    // Número do cilindro
-    const numText=`${i}º CILINDRO`;
+    const numText = `CILINDRO ${i}`;
     ctxCil.font="bold 50px Arial";
-    const numWidth=ctxCil.measureText(numText).width;
-    const paddingNum=20;
-    const rectHeight=60;
-    const rectY=5; // colado no topo
-    const rectX=(imgSize-numWidth)/2 - paddingNum;
-
+    const numWidth = ctxCil.measureText(numText).width;
+    const numPadding = 20;
+    const rectHeight = 60;
+    const rectX = (imgSize - numWidth)/2 - numPadding;
+    const rectY = 5;
     ctxCil.fillStyle="white";
     ctxCil.strokeStyle="black";
     ctxCil.lineWidth=2;
-    ctxCil.fillRect(rectX,rectY,numWidth+paddingNum*2,rectHeight);
-    ctxCil.strokeRect(rectX,rectY,numWidth+paddingNum*2,rectHeight);
+    ctxCil.fillRect(rectX, rectY, numWidth + numPadding*2, rectHeight);
+    ctxCil.strokeRect(rectX, rectY, numWidth + numPadding*2, rectHeight);
 
     ctxCil.fillStyle="black";
     ctxCil.textAlign="center";
     ctxCil.textBaseline="middle";
-    ctxCil.fillText(numText,imgSize/2,rectY+rectHeight/2);
+    ctxCil.fillText(numText, imgSize/2, rectY + rectHeight/2);
 
     const link=document.createElement('a');
     link.download=`CILINDRO${i}.jpg`;
@@ -274,7 +248,25 @@ document.getElementById('clearBtn').addEventListener('click',function(){
   const photos=document.querySelectorAll('.photo-box');
   photos.forEach(box=>{box.style.backgroundImage=''; box.textContent='Clique para adicionar foto'; const input=box.querySelector('input[type="file"]'); if(input) input.value='';});
 });
+
+// ---- NOVO: destaque de valores >= 67,50 ----
+function atualizarDestaque(input) {
+  const valor = parseFloat(input.value.replace(',', '.'));
+  if (!isNaN(valor) && valor >= 67.50) {
+    input.style.color = "red";
+    input.style.fontWeight = "bold";
+  } else {
+    input.style.color = "black";
+    input.style.fontWeight = "normal";
+  }
+}
+const camposMedicao = document.querySelectorAll('input[id^="exaustao"], input[id^="admissao"]');
+camposMedicao.forEach(input => {
+  input.addEventListener('input', () => atualizarDestaque(input));
+});
 </script>
 
 </body>
 </html>
+
+
