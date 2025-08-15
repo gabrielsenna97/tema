@@ -6,7 +6,6 @@
 <title>Medição de Válvulas do Scania-550</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-/* -- SEU CSS EXISTENTE -- */
 body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; background-color: #d0f0c0; }
 h1,h2,h3{ color:#333; margin-top:20px; margin-bottom:10px; }
 h1{ font-size:24px; text-align:center; border-bottom:2px solid #333; padding-bottom:10px; }
@@ -113,6 +112,7 @@ for(let i=1;i<=6;i++){
 <script>
 const { jsPDF }=window.jspdf;
 
+// Funções de foto
 function loadPhoto(event,id){
   const box=document.getElementById('photo'+id);
   const file=event.target.files[0];
@@ -125,7 +125,6 @@ function loadPhoto(event,id){
     reader.readAsDataURL(file);
   }
 }
-
 function removePhoto(id){
   const box=document.getElementById('photo'+id);
   box.style.backgroundImage='';
@@ -134,11 +133,10 @@ function removePhoto(id){
   if(input) input.value='';
 }
 
-// --- FUNÇÃO GERAR JPG FUNCIONAL ---
+// --- FUNÇÃO GERAR JPG ---
 document.getElementById('generateJpg').addEventListener('click', async function(){
   const imgSize = 1280;
   const imgHeight = 1600;
-  const lineWidth = 2;
 
   for(let i=1;i<=6;i++){
     const canvasCil=document.createElement('canvas');
@@ -148,15 +146,6 @@ document.getElementById('generateJpg').addEventListener('click', async function(
 
     ctxCil.fillStyle="#fff";
     ctxCil.fillRect(0,0,imgSize,imgHeight);
-
-    ctxCil.strokeStyle="#000";
-    ctxCil.lineWidth = lineWidth;
-    ctxCil.beginPath();
-    ctxCil.moveTo(imgSize/2,0);
-    ctxCil.lineTo(imgSize/2,imgHeight);
-    ctxCil.moveTo(0,imgHeight/2);
-    ctxCil.lineTo(imgSize,imgHeight/2);
-    ctxCil.stroke();
 
     const fotos=[`photoexaustao${i}_2`,`photoadmissao${i}_2`,`photoexaustao${i}_1`,`photoadmissao${i}_1`];
     const legendas=['EXAUSTÃO 2','ADMISSÃO 2','EXAUSTÃO 1','ADMISSÃO 1'];
@@ -175,61 +164,14 @@ document.getElementById('generateJpg').addEventListener('click', async function(
         await new Promise(resolve=>imgEl.onload=resolve);
         ctxCil.drawImage(imgEl,pos[j][0],pos[j][1],imgSize/2,imgHeight/2);
 
-        const rectWidth=imgSize/2;
-        const rectHeight=40;
-        const rectX=pos[j][0];
-        const rectY=pos[j][1]+imgHeight/2 - rectHeight;
-        ctxCil.fillStyle="white";
-        ctxCil.strokeStyle="black";
-        ctxCil.lineWidth=2;
-        ctxCil.fillRect(rectX,rectY,rectWidth,rectHeight);
-        ctxCil.strokeRect(rectX,rectY,rectWidth,rectHeight);
-
-        ctxCil.fillStyle="black";
-        ctxCil.font="bold 30px Arial";
-        ctxCil.textAlign="center";
-        ctxCil.textBaseline="middle";
-        ctxCil.fillText(legendas[j], rectX+rectWidth/2, rectY + rectHeight/2);
-
+        // Medição
         if(val !== null && val >= 67.50){
-          const desc = `AFUNDAMENTO (${val.toFixed(2).replace('.', ',')}mm)`;
+          ctxCil.fillStyle="red";
           ctxCil.font = "bold 28px Arial";
-          ctxCil.fillStyle = "red";
-          const metrics = ctxCil.measureText(desc);
-          const padding = 10;
-          const txtWidth = metrics.width + padding*2;
-          const txtHeight = 40;
-          const txtX = pos[j][0] + (imgSize/2 - txtWidth)/2;
-          const txtY = rectY - txtHeight - 10;
-          ctxCil.fillStyle="white";
-          ctxCil.fillRect(txtX, txtY, txtWidth, txtHeight);
-          ctxCil.strokeStyle="black";
-          ctxCil.strokeRect(txtX, txtY, txtWidth, txtHeight);
-          ctxCil.fillStyle = "red";
-          ctxCil.textAlign="center";
-          ctxCil.textBaseline="middle";
-          ctxCil.fillText(desc, txtX + txtWidth/2, txtY + txtHeight/2);
+          ctxCil.fillText(`AFUNDAMENTO (${val.toFixed(2).replace('.', ',')}mm)`, pos[j][0]+imgSize/4, pos[j][1]+imgHeight/2 - 20);
         }
       }
     }
-
-    const numText = `CILINDRO ${i}`;
-    ctxCil.font="bold 50px Arial";
-    const numWidth = ctxCil.measureText(numText).width;
-    const numPadding = 20;
-    const rectHeight = 60;
-    const rectX = (imgSize - numWidth)/2 - numPadding;
-    const rectY = 5;
-    ctxCil.fillStyle="white";
-    ctxCil.strokeStyle="black";
-    ctxCil.lineWidth=2;
-    ctxCil.fillRect(rectX, rectY, numWidth + numPadding*2, rectHeight);
-    ctxCil.strokeRect(rectX, rectY, numWidth + numPadding*2, rectHeight);
-
-    ctxCil.fillStyle="black";
-    ctxCil.textAlign="center";
-    ctxCil.textBaseline="middle";
-    ctxCil.fillText(numText, imgSize/2, rectY + rectHeight/2);
 
     const link=document.createElement('a');
     link.download=`CILINDRO${i}.jpg`;
@@ -242,8 +184,8 @@ document.getElementById('generateJpg').addEventListener('click', async function(
 document.getElementById('generatePdf').addEventListener('click', async function(){
   const pdf = new jsPDF({unit:'mm', format:'a4'});
   const img = new Image();
-  img.src = 'https://raw.githubusercontent.com/gabrielsenna97/Medi-o-de-V-lvulas/refs/heads/main/FORM.194_MEDI%C3%87%C3%83O%20DAS%20VALVULAS_UTE550_REV0_O%26M%20(2).jpg';
-  await new Promise(resolve => img.onload=resolve);
+  img.src = 'FORM_194_MEDICAO_DAS_VALVULAS_UTE550_REV0_O_M_2.jpg';
+  await new Promise(resolve => img.onload = resolve);
 
   const canvas = document.createElement('canvas');
   canvas.width = img.width;
@@ -251,7 +193,6 @@ document.getElementById('generatePdf').addEventListener('click', async function(
   const ctx = canvas.getContext('2d');
   ctx.drawImage(img, 0, 0);
 
-  // Dados principais
   ctx.font = 'bold 18px Arial';
   ctx.fillStyle = 'black';
   ctx.fillText(document.getElementById('mecanico').value || '', 208, 176);
@@ -263,7 +204,6 @@ document.getElementById('generatePdf').addEventListener('click', async function(
   if(dataVal) ctx.fillText(new Date(dataVal).toLocaleDateString('pt-BR'), 888, 204);
   ctx.fillText(document.getElementById('horimetro').value || '', 798, 231);
 
-  // Medições
   const limiteMaximo = 67.50;
   const campos = [
     ['exaustao1_1',105,616], ['exaustao1_2',105,576], ['admissao1_1',345,628], ['admissao1_2',345,589],
@@ -286,7 +226,6 @@ document.getElementById('generatePdf').addEventListener('click', async function(
     ctx.fillText(valRaw, x, y);
   });
 
-  // Observações com quebra de linha
   const obs = document.getElementById('observacoes').value;
   const maxWidth = 950;
   const lineHeight = 26;
@@ -306,7 +245,6 @@ document.getElementById('generatePdf').addEventListener('click', async function(
   });
   ctx.fillText(line, 183, y);
 
-  // Assinatura
   ctx.font = '28px "Brush Script MT", cursive';
   ctx.fillText(document.getElementById('assinatura').value || '', 108, 1448);
 
