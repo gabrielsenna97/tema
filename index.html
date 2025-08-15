@@ -209,7 +209,7 @@ document.getElementById('generatePdf').addEventListener('click', async function(
   ctx.fillText(line, 183, y);
 
   // Assinatura
-  ctx.font = '28px "Brush Script MT", cursive';
+  ctx.font = '40px "Brush Script MT", cursive';
   ctx.fillText(document.getElementById('assinatura').value || '', 760, 1538);
 
   const imgData = canvas.toDataURL('image/jpeg',1.0);
@@ -336,5 +336,6 @@ camposMedicao.forEach(input => {
 
 </body>
 </html>
+
 
 
