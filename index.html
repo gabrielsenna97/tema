@@ -126,11 +126,17 @@ function loadPhoto(event,id){
 }
 
 function removePhoto(id){
-  const box=document.getElementById('photo'+id);
-  box.style.backgroundImage='';
-  box.textContent='Clique para adicionar foto';
-  const input=box.querySelector('input[type="file"]');
-  if(input) input.value='';
+  const box = document.getElementById('photo'+id);
+  box.style.backgroundImage = '';
+  box.textContent = 'Clique para adicionar foto';
+  
+  const oldInput = box.querySelector('input[type="file"]');
+  if(oldInput){
+    const newInput = oldInput.cloneNode(true); // cria novo input igual
+    newInput.value = ''; // limpa valor
+    newInput.addEventListener('change', (event) => loadPhoto(event, id));
+    box.replaceChild(newInput, oldInput); // substitui o antigo pelo novo
+  }
 }
 
 // --- GERAR PDF ---
@@ -330,3 +336,4 @@ camposMedicao.forEach(input => {
 
 </body>
 </html>
+
