@@ -142,11 +142,23 @@ reader.readAsDataURL(file);
 }
 
 function removePhoto(id){
-const box=document.getElementById('photo'+id);
-box.style.backgroundImage='';
-box.textContent='Clique para adicionar foto';
-const input=box.querySelector('input[type="file"]');
-if(input) input.value='';
+    const box = document.getElementById('photo' + id);
+    box.style.backgroundImage = '';
+    box.textContent = 'Clique para adicionar foto';
+
+    // remove o input antigo
+    const oldInput = box.querySelector('input[type="file"]');
+    if (oldInput) oldInput.remove();
+
+    // cria um novo input do zero
+    const newInput = document.createElement('input');
+    newInput.type = 'file';
+    newInput.accept = 'image/*';
+    newInput.capture = 'environment';
+    newInput.onchange = (event) => loadPhoto(event, id);
+
+    // adiciona no box
+    box.appendChild(newInput);
 }
 
 // --- GERAR PDF ---
@@ -348,4 +360,5 @@ allInputs.forEach(input => input.addEventListener('input', ()=>atualizarDestaque
 
 </body>
 </html>
+
 
