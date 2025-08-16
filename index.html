@@ -66,53 +66,45 @@ width:120px; height:120px; border:2px dashed #999; margin:10px auto; display:fle
 <div class="valve-container">
 <script>
 const container=document.currentScript.parentNode;
-
 for(let i=1;i<=6;i++){
-  const section=document.createElement('div');
-  section.className='valve-section';
-  section.innerHTML=`<div class="cilindro-label">${i}º CILINDRO</div>`;
+const section=document.createElement('div');
+section.className='valve-section';
+section.innerHTML=`<div class="cilindro-label">${i}º CILINDRO</div>`;
 
-  // Linha de cima: EXAUSTÃO 2 | ADMISSÃO 2
-  section.innerHTML += `<div style="display:flex; justify-content:space-between;">`;
-  ['exaustao','admissao'].forEach(tipo=>{
-    const tipoNome = tipo==='exaustao'?'EXAUSTÃO':'ADMISSÃO';
-    const j=2;
-    const idPhoto = tipo+i+'_'+j;
-    section.innerHTML += `
-      <div style="width:48%; text-align:center; margin-bottom:10px;">
-        <div class="measurement"><input type="text" id="${tipo}${i}_${j}" placeholder="${tipoNome} ${j}"></div>
-        <div class="photo-box" id="photo${idPhoto}">
-          Clique para adicionar foto
-          <div class="photo-label">${tipoNome} ${j}</div>
-          <input type="file" accept="image/*" capture="environment" onchange="loadPhoto(event,'${idPhoto}')">
-        </div>
-        <button class="remove-photo" onclick="removePhoto('${idPhoto}')">REMOVER FOTO</button>
-      </div>
-    `;
-  });
-  section.innerHTML += `</div>`;
+// Layout 2x2
+const layoutDiv = document.createElement('div');
+layoutDiv.style.display='grid';
+layoutDiv.style.gridTemplateColumns='1fr 1fr';
+layoutDiv.style.gridTemplateRows='1fr 1fr';
+layoutDiv.style.gap='10px';
 
-  // Linha de baixo: EXAUSTÃO 1 | ADMISSÃO 1
-  section.innerHTML += `<div style="display:flex; justify-content:space-between;">`;
-  ['exaustao','admissao'].forEach(tipo=>{
-    const tipoNome = tipo==='exaustao'?'EXAUSTÃO':'ADMISSÃO';
-    const j=1;
-    const idPhoto = tipo+i+'_'+j;
-    section.innerHTML += `
-      <div style="width:48%; text-align:center; margin-bottom:10px;">
-        <div class="measurement"><input type="text" id="${tipo}${i}_${j}" placeholder="${tipoNome} ${j}"></div>
-        <div class="photo-box" id="photo${idPhoto}">
-          Clique para adicionar foto
-          <div class="photo-label">${tipoNome} ${j}</div>
-          <input type="file" accept="image/*" capture="environment" onchange="loadPhoto(event,'${idPhoto}')">
-        </div>
-        <button class="remove-photo" onclick="removePhoto('${idPhoto}')">REMOVER FOTO</button>
-      </div>
-    `;
-  });
-  section.innerHTML += `</div>`;
+// Definir posições: cima esquerda Exaustão2, cima direita Admissão2, baixo esquerda Exaustão1, baixo direita Admissão1
+const posicoes=[
+{tipo:'exaustao', j:2},
+{tipo:'admissao', j:2},
+{tipo:'exaustao', j:1},
+{tipo:'admissao', j:1}
+];
 
-  container.appendChild(section);
+posicoes.forEach(({tipo,j})=>{
+const tipoNome = tipo==='exaustao'?'EXAUSTÃO':'ADMISSÃO';
+const idPhoto=tipo+i+'_'+j;
+const div = document.createElement('div');
+div.style.textAlign='center';
+div.innerHTML=`
+<div class="measurement"><input type="text" id="${tipo}${i}_${j}" placeholder="${tipoNome} ${j}"></div>
+<div class="photo-box" id="photo${idPhoto}">
+Clique para adicionar foto
+<div class="photo-label">${tipoNome} ${j}</div>
+<input type="file" accept="image/*" capture="environment" onchange="loadPhoto(event,'${idPhoto}')">
+</div>
+<button class="remove-photo" onclick="removePhoto('${idPhoto}')">REMOVER FOTO</button>
+`;
+layoutDiv.appendChild(div);
+});
+
+section.appendChild(layoutDiv);
+container.appendChild(section);
 }
 </script>
 </div>
