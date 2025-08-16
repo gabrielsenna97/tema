@@ -10,19 +10,13 @@ body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; backgroun
 h1,h2,h3{ color:#333; margin-top:20px; margin-bottom:10px; }
 h1{ font-size:24px; text-align:center; border-bottom:2px solid #333; padding-bottom:10px; }
 .valve-container{ display:flex; flex-wrap:wrap; justify-content:space-between; margin-bottom:20px; }
-.valve-section{
-  border:1px solid #ddd;
-  padding:15px;
-  margin-bottom:20px;
-  width:32%;
-  box-sizing:border-box;
-  background-color:#fff;
-  border-radius:10px;
-
-  display: flex;           /* empilha elementos verticalmente */
-  flex-direction: column;  /* vertical */
-  align-items: center;     /* centraliza horizontal */
+@media(max-width:900px){
+  .valve-section{
+    width:90%;       /* ocupa quase toda a tela no celular */
+    padding:15px;
+  }
 }
+
 .valve-type{ font-weight:bold; margin-top:10px; text-align:center; padding:5px; border-radius:4px; background-color:white; color:black; }
 .measurement{ text-align:center; margin:10px 0; font-size:18px; background-color:white; border-radius:8px; padding:5px; font-weight:bold; color:black; }
 input[type="text"], input[type="date"], textarea{ width:120px; padding:8px; text-align:center; font-size:16px; border:1px solid #ddd; border-radius:4px; }
@@ -96,15 +90,11 @@ section.innerHTML=`<div class="cilindro-label">${i}º CILINDRO</div>`;
 
 // Layout 2x2
 const layoutDiv = document.createElement('div');
-layoutDiv.style.display='grid';
-layoutDiv.style.gridTemplateColumns='1fr 1fr';
-layoutDiv.style.gridTemplateRows='1fr 1fr';
-layoutDiv.style.gap='10px';
-layoutDiv.style.justifyContent = 'center';
-layoutDiv.style.alignContent = 'center';
-layoutDiv.style.width = '100%';       // ocupa toda a largura da seção
-layoutDiv.style.maxWidth = '250px';   // limita para não ultrapassar o fundo
-   // centraliza verticalmente
+@media(max-width:900px){
+  .valve-section div[style*="display: grid"] {
+    max-width:100%;   /* grid ocupa toda a largura da seção no celular */
+  }
+}
 
 // Definir posições: cima esquerda Exaustão2, cima direita Admissão2, baixo esquerda Exaustão1, baixo direita Admissão1
 const posicoes=[
@@ -388,6 +378,7 @@ allInputs.forEach(input => input.addEventListener('input', ()=>atualizarDestaque
 
 </body>
 </html>
+
 
 
 
