@@ -10,12 +10,16 @@ body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; backgroun
 h1,h2,h3{ color:#333; margin-top:20px; margin-bottom:10px; }
 h1{ font-size:24px; text-align:center; border-bottom:2px solid #333; padding-bottom:10px; }
 .valve-container{ display:flex; flex-wrap:wrap; justify-content:space-between; margin-bottom:20px; }
-@media(max-width:900px){
-  .valve-section{
-    width:90%;       /* ocupa quase toda a tela no celular */
-    padding:15px;
-  }
-}
+const layoutDiv = document.createElement('div');
+layoutDiv.className = 'photo-grid';  // <--- ADICIONADO
+layoutDiv.style.display='grid';
+layoutDiv.style.gridTemplateColumns='1fr 1fr';
+layoutDiv.style.gridTemplateRows='1fr 1fr';
+layoutDiv.style.gap='10px';
+layoutDiv.style.justifyContent = 'center';
+layoutDiv.style.alignContent = 'center';
+layoutDiv.style.width = '100%';
+layoutDiv.style.maxWidth = '250px';
 
 .valve-type{ font-weight:bold; margin-top:10px; text-align:center; padding:5px; border-radius:4px; background-color:white; color:black; }
 .measurement{ text-align:center; margin:10px 0; font-size:18px; background-color:white; border-radius:8px; padding:5px; font-weight:bold; color:black; }
@@ -40,9 +44,15 @@ width:120px; height:120px; border:2px dashed #999; margin:10px auto; display:fle
 .photo-label { position:absolute; bottom:0; width:100%; text-align:center; background-color:white; color:black; font-weight:bold; font-size:12px; border-top-left-radius:5px; border-top-right-radius:5px; padding:2px 0; }
 .cilindro-label { text-align:center; font-weight:bold; color:black; background-color:white; border-radius:10px; padding:5px; margin-bottom:10px; font-size:16px; }
 @media(max-width:900px){
-  .valve-section{ 
-    width:100%; 
+  .valve-section{
+    width:90%;       /* ocupa quase toda a tela no celular */
+    padding:15px;
   }
+  .photo-grid{
+    grid-template-columns: 1fr;  /* no celular, 1 coluna só */
+    max-width: 100%;             /* ocupa toda a largura da seção */
+  }
+}
   .photo-box{
     max-width:100%;  /* usa toda a largura disponível */
   }
@@ -378,6 +388,7 @@ allInputs.forEach(input => input.addEventListener('input', ()=>atualizarDestaque
 
 </body>
 </html>
+
 
 
 
