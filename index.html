@@ -38,7 +38,10 @@ width:120px; height:120px; border:2px dashed #999; margin:10px auto; display:fle
     width:100%; 
   }
   .photo-box{
-    max-width:100px; /* no celular fica menor */
+    max-width:100%;  /* usa toda a largura disponível */
+  }
+  .valve-section div[style*="display: grid"] {
+    grid-template-columns: 1fr;  /* no celular, 1 coluna só */
   }
 }
 </style>
@@ -368,6 +371,7 @@ allInputs.forEach(input => input.addEventListener('input', ()=>atualizarDestaque
 
 </body>
 </html>
+
 
 
 
