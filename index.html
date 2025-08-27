@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -451,12 +452,10 @@ pdf.save('MEDICAO_VALVULAS.pdf');
 
 // --- GERAR JPG CORRIGIDO ---
 document.getElementById('generateJpg').addEventListener('click', async function() {
-const imgSize = 800;
-const imgHeight = 1060;
+const imgSize = 1280;
+const imgHeight = 1700;
 
 for (let i = 1; i <= 6; i++) {
-
-
 const canvasCil = document.createElement('canvas');
 canvasCil.width = imgSize;
 canvasCil.height = imgHeight;
@@ -542,7 +541,7 @@ ctxCil.fillText(numText, imgSize/2, rectY + rectHeight/2);
 
 const link = document.createElement('a');
 link.download = `CILINDRO${i}.jpg`;
-link.href = canvasCil.toDataURL('image/jpeg',0.7);
+link.href = canvasCil.toDataURL('image/jpeg',0.95);
 link.click();
 }
 });
@@ -572,7 +571,6 @@ allInputs.forEach(input => input.addEventListener('input', ()=>atualizarDestaque
 
 </body>
 </html>
-
 
 
 
