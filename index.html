@@ -7,203 +7,58 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 body { 
-font-family: Arial, sans-serif; 
-margin: 20px; 
-line-height: 1.6; 
-background-color: #ffffff;
+    font-family: Arial, sans-serif; 
+    margin: 20px; 
+    line-height: 1.6; 
+    background-color: #ffffff;
 }
-h1,h2,h3{ 
-margin-top:20px; 
-margin-bottom:10px; 
-}
+h1,h2,h3{ margin-top:20px; margin-bottom:10px; }
 h1{ 
-font-size:24px; 
-text-align:center; 
-border-bottom:3px solid #257500; 
-padding-bottom:10px; 
-color: #ffffff; 
-background-color: #257500; 
-border-radius:8px;
+    font-size:24px; 
+    text-align:center; 
+    border-bottom:3px solid #257500; 
+    padding-bottom:10px; 
+    color: #ffffff; 
+    background-color: #257500; 
+    border-radius:8px;
 }
 .valve-container{ 
-display:flex; 
-flex-wrap:wrap; 
-justify-content:space-between; 
-margin-bottom:20px; 
+    display:flex; 
+    flex-wrap:wrap; 
+    justify-content:space-between; 
+    margin-bottom:20px; 
 }
 .valve-section{ 
-border:2px solid #257500; 
-padding:15px; 
-margin-bottom:20px; 
-width:32%; 
-box-sizing:border-box; 
-background-color:#ffffff; 
-border-radius:10px; 
-box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border:2px solid #257500; 
+    padding:15px; 
+    margin-bottom:20px; 
+    width:32%; 
+    box-sizing:border-box; 
+    background-color:#ffffff; 
+    border-radius:10px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
-.measurement{ 
-text-align:center; 
-margin:10px 0; 
-font-size:18px; 
-background-color:#FFFACD; 
-border-radius:8px; 
-padding:5px; 
-font-weight:bold; 
-color:black; 
-}
-input[type="text"], input[type="date"], textarea{ 
-width:120px; 
-padding:8px; 
-text-align:center; 
-font-size:16px; 
-border:2px solid #FF8C00; 
-border-radius:4px; 
-}
-textarea{ 
-width:100%; 
-height:100px; 
-padding:10px; 
-text-align:left; 
-resize:vertical; 
-border:2px solid #FF8C00; 
-border-radius:6px;
-}
-.info-table{ 
-width:100%; 
-margin-bottom:20px; 
-}
-.info-table td{ 
-padding:5px 0; 
-text-align:left; 
-}
-.signature{ 
-margin-top:50px; 
-border-top:2px solid #FF8C00; 
-width:320px; 
-padding-top:5px; 
-text-align:center; 
-font-weight:bold; 
-font-size:16px; 
-position:relative; 
-}
-#assinatura{ 
-position:absolute; 
-top:-36px; 
-left:0; 
-width:320px; 
-border:none; 
-font-size:28px; 
-text-align:center; 
-background:transparent; 
-outline:none; 
-font-family:'Brush Script MT', cursive, Arial, sans-serif; 
-color:#257500;
-}
-#assinatura::placeholder{ 
-color:#999; 
-}
-.warning{ 
-background-color:#257500; 
-padding:10px; 
-border-left:6px solid #257500; 
-margin:15px 0; 
-text-align:center; 
-color:white;
-font-weight:bold;
-border-radius:6px;
-}
-.obs{ 
-margin-top:30px; 
-font-style:italic; 
-background-color:#FFFACD; 
-padding:10px; 
-border-radius:6px; 
-border:1px solid #FF8C00;
-}
-.button-container{ 
-margin-top:20px; 
-text-align:center; 
-}
-button{ 
-background-color:#257500; 
-color:white; 
-border:none; 
-padding:10px 20px; 
-margin:0 10px; 
-font-size:16px; 
-border-radius:6px; 
-cursor:pointer; 
-font-weight:bold;
-transition: all 0.3s ease;
-}
-button:hover{
-background-color:#FF4500;
-}
-button.clear-btn{ 
-background-color:#FF4500; 
-}
-.photo-box{
-width:120px; 
-height:120px; 
-border:2px dashed #FF8C00; 
-margin:10px auto; 
-display:flex; 
-align-items:center; 
-justify-content:center; 
-text-align:center; 
-font-size:12px; 
-color:#666; 
-position:relative; 
-background-size:cover; 
-background-position:center; 
-overflow:hidden; 
-border-radius:10px;
-}
-.photo-box input[type="file"]{ 
-position:absolute; 
-width:100%; 
-height:100%; 
-opacity:0; 
-cursor:pointer; 
-}
-.remove-photo{ 
-display:inline-block; 
-margin-left:5px; 
-background:#FF4500; 
-color:#fff; 
-border:none; 
-padding:2px 5px; 
-font-size:10px; 
-cursor:pointer; 
-border-radius:4px; 
-vertical-align:top; 
-}
-.photo-label { 
-position:absolute; 
-bottom:0; 
-width:100%; 
-text-align:center; 
-background-color:#257500; 
-color:white; 
-font-weight:bold; 
-font-size:12px; 
-border-top-left-radius:5px; 
-border-top-right-radius:5px; 
-padding:2px 0; 
-}
-.cilindro-label { 
-text-align:center; 
-font-weight:bold; 
-color:white; 
-background-color:#257500; 
-border-radius:10px; 
-padding:5px; 
-margin-bottom:10px; 
-font-size:16px; 
-}
-@media(max-width:900px){ 
-.valve-section{ width:100%; } 
-}
+.valve-type{ font-weight:bold; margin-top:10px; text-align:center; padding:5px; border-radius:4px; background-color:#FFA500; color:white; }
+.measurement{ text-align:center; margin:10px 0; font-size:18px; background-color:#FFFACD; border-radius:8px; padding:5px; font-weight:bold; color:black; }
+input[type="text"], input[type="date"], textarea{ width:120px; padding:8px; text-align:center; font-size:16px; border:2px solid #FF8C00; border-radius:4px; }
+textarea{ width:100%; height:100px; padding:10px; text-align:left; resize:vertical; border:2px solid #FF8C00; border-radius:6px; }
+.info-table{ width:100%; margin-bottom:20px; }
+.info-table td{ padding:5px 0; text-align:left; }
+.signature{ margin-top:50px; border-top:2px solid #FF8C00; width:320px; padding-top:5px; text-align:center; font-weight:bold; font-size:16px; position:relative; }
+#assinatura{ position:absolute; top:-36px; left:0; width:320px; border:none; font-size:28px; text-align:center; background:transparent; outline:none; font-family:'Brush Script MT', cursive, Arial, sans-serif; color:#257500; }
+#assinatura::placeholder{ color:#999; }
+.warning{ background-color:#257500; padding:10px; border-left:6px solid #257500; margin:15px 0; text-align:center; color:white; font-weight:bold; border-radius:6px; }
+.obs{ margin-top:30px; font-style:italic; background-color:#FFFACD; padding:10px; border-radius:6px; border:1px solid #FF8C00; }
+.button-container{ margin-top:20px; text-align:center; }
+button{ background-color:#257500; color:white; border:none; padding:10px 20px; margin:0 10px; font-size:16px; border-radius:6px; cursor:pointer; font-weight:bold; transition: all 0.3s ease; }
+button:hover{ background-color:#FF4500; }
+button.clear-btn{ background-color:#FF4500; }
+.photo-box{ width:120px; height:120px; border:2px dashed #FF8C00; margin:10px auto; display:flex; align-items:center; justify-content:center; text-align:center; font-size:12px; color:#666; position:relative; background-size:cover; background-position:center; overflow:hidden; border-radius:10px; }
+.photo-box input[type="file"]{ position:absolute; width:100%; height:100%; opacity:0; cursor:pointer; }
+.remove-photo{ display:inline-block; margin-left:5px; background:#FF4500; color:#fff; border:none; padding:2px 5px; font-size:10px; cursor:pointer; border-radius:4px; vertical-align:top; }
+.photo-label { position:absolute; bottom:0; width:100%; text-align:center; background-color:#257500; color:white; font-weight:bold; font-size:12px; border-top-left-radius:5px; border-top-right-radius:5px; padding:2px 0; }
+.cilindro-label { text-align:center; font-weight:bold; color:white; background-color:#257500; border-radius:10px; padding:5px; margin-bottom:10px; font-size:16px; }
+@media(max-width:900px){ .valve-section{ width:100%; } }
 </style>
 </head>
 <body>
@@ -238,51 +93,34 @@ font-size:16px;
 <script>
 const container=document.currentScript.parentNode;
 for(let i=1;i<=6;i++){
-const section=document.createElement('div');
-section.className='valve-section';
-section.innerHTML=`<div class="cilindro-label">${i}º CILINDRO</div>`;
-
-// Layout 2x2
-const layoutDiv = document.createElement('div');
-layoutDiv.style.display='grid';
-layoutDiv.style.gridTemplateColumns='1fr 1fr';
-layoutDiv.style.gridTemplateRows='1fr 1fr';
-layoutDiv.style.gap='10px';
-layoutDiv.style.justifyContent = 'center';
-layoutDiv.style.alignContent = 'center';
-
-const posicoes=[
-{tipo:'exaustao', j:2},
-{tipo:'admissao', j:2},
-{tipo:'exaustao', j:1},
-{tipo:'admissao', j:1}
-];
-
-posicoes.forEach(({tipo,j})=>{
-const tipoNome = tipo==='exaustao'?'EXAUSTÃO':'ADMISSÃO';
-const idPhoto=tipo+i+'_'+j;
-const div = document.createElement('div');
-div.style.textAlign='center';
-div.innerHTML=`
-<div class="measurement"><input type="text" id="${tipo}${i}_${j}" placeholder="${tipoNome} ${j}"></div>
-<div class="photo-box" id="photo${idPhoto}">
-Clique para adicionar foto
-<div class="photo-label">${tipoNome} ${j}</div>
-<input type="file" accept="image/*" capture="environment" onchange="loadPhoto(event,'${idPhoto}')">
-</div>
-<button class="remove-photo" onclick="removePhoto('${idPhoto}')">REMOVER FOTO</button>
-`;
-layoutDiv.appendChild(div);
-});
-section.appendChild(layoutDiv);
-
-// Adiciona botão gerar JPG para cada cilindro
-const btnJPG = document.createElement('button');
-btnJPG.textContent = `Gerar JPG Cilindro ${i}`;
-btnJPG.onclick = () => gerarJPGCilindro(i);
-section.appendChild(btnJPG);
-
-container.appendChild(section);
+    const section=document.createElement('div');
+    section.className='valve-section';
+    section.innerHTML=`<div class="cilindro-label">${i}º CILINDRO</div>`;
+    const layoutDiv=document.createElement('div');
+    layoutDiv.style.display='grid';
+    layoutDiv.style.gridTemplateColumns='1fr 1fr';
+    layoutDiv.style.gridTemplateRows='1fr 1fr';
+    layoutDiv.style.gap='10px';
+    layoutDiv.style.justifyContent='center';
+    layoutDiv.style.alignContent='center';
+    const posicoes=[{tipo:'exaustao', j:2},{tipo:'admissao', j:2},{tipo:'exaustao', j:1},{tipo:'admissao', j:1}];
+    posicoes.forEach(({tipo,j})=>{
+        const tipoNome=tipo==='exaustao'?'EXAUSTÃO':'ADMISSÃO';
+        const idPhoto=tipo+i+'_'+j;
+        const div=document.createElement('div');
+        div.style.textAlign='center';
+        div.innerHTML=`
+        <div class="measurement"><input type="text" id="${tipo}${i}_${j}" placeholder="${tipoNome} ${j}"></div>
+        <div class="photo-box" id="photo${idPhoto}">Clique para adicionar foto
+        <div class="photo-label">${tipoNome} ${j}</div>
+        <input type="file" accept="image/*" capture="environment" onchange="loadPhoto(event,'${idPhoto}')">
+        </div>
+        <button class="remove-photo" onclick="removePhoto('${idPhoto}')">REMOVER FOTO</button>
+        `;
+        layoutDiv.appendChild(div);
+    });
+    section.appendChild(layoutDiv);
+    container.appendChild(section);
 }
 </script>
 </div>
@@ -294,6 +132,13 @@ container.appendChild(section);
 
 <div class="button-container">
 <button id="generatePdf">Gerar PDF</button>
+<!-- 6 botões separados para cada cilindro -->
+<button onclick="gerarJpgCilindro(1)">Gerar JPG Cilindro 1</button>
+<button onclick="gerarJpgCilindro(2)">Gerar JPG Cilindro 2</button>
+<button onclick="gerarJpgCilindro(3)">Gerar JPG Cilindro 3</button>
+<button onclick="gerarJpgCilindro(4)">Gerar JPG Cilindro 4</button>
+<button onclick="gerarJpgCilindro(5)">Gerar JPG Cilindro 5</button>
+<button onclick="gerarJpgCilindro(6)">Gerar JPG Cilindro 6</button>
 <button id="clearBtn" class="clear-btn">Limpar</button>
 </div>
 
@@ -306,180 +151,168 @@ ASSINATURA DO MECÂNICO:
 const { jsPDF }=window.jspdf;
 
 function loadPhoto(event,id){
-const box=document.getElementById('photo'+id);
-const file=event.target.files[0];
-if(file){
-const reader=new FileReader();
-reader.onload=function(e){
-box.style.backgroundImage=`url('${e.target.result}')`;
-box.textContent='';
-}
-reader.readAsDataURL(file);
-}
+    const box=document.getElementById('photo'+id);
+    const file=event.target.files[0];
+    if(file){
+        const reader=new FileReader();
+        reader.onload=function(e){
+            box.style.backgroundImage=`url('${e.target.result}')`;
+            box.textContent='';
+        }
+        reader.readAsDataURL(file);
+    }
 }
 
 function removePhoto(id){
-const box = document.getElementById('photo' + id);
-box.style.backgroundImage = '';
-box.textContent = 'Clique para adicionar foto';
-const oldInput = box.querySelector('input[type="file"]');
-if (oldInput) oldInput.remove();
-const newInput = document.createElement('input');
-newInput.type = 'file';
-newInput.accept = 'image/*';
-newInput.capture = 'environment';
-newInput.onchange = (event) => loadPhoto(event, id);
-box.appendChild(newInput);
+    const box=document.getElementById('photo' + id);
+    box.style.backgroundImage = '';
+    box.textContent = 'Clique para adicionar foto';
+    const oldInput = box.querySelector('input[type="file"]');
+    if (oldInput) oldInput.remove();
+    const newInput = document.createElement('input');
+    newInput.type = 'file';
+    newInput.accept = 'image/*';
+    newInput.capture = 'environment';
+    newInput.onchange = (event) => loadPhoto(event, id);
+    box.appendChild(newInput);
 }
 
 // --- GERAR PDF ---
 document.getElementById('generatePdf').addEventListener('click', async function(){
-const pdf = new jsPDF({unit:'mm', format:'a4'});
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = 2480;
-canvas.height = 3508; // A4 em 300dpi aproximado
-
-ctx.fillStyle="#fff";
-ctx.fillRect(0,0,canvas.width,canvas.height);
-
-// Dados principais
-ctx.font = 'bold 48px Arial';
-ctx.fillStyle = 'black';
-ctx.fillText(document.getElementById('mecanico').value || '', 208, 176);
-ctx.fillText(document.getElementById('usina').value || '', 165, 204);
-ctx.fillText(document.getElementById('serie').value || '', 165, 231);
-ctx.fillText('UGD- '+(document.getElementById('ugd').value||''), 590, 262);
-ctx.fillText(document.getElementById('os').value || '', 292, 262);
-const dataVal = document.getElementById('data').value;
-if(dataVal) ctx.fillText(new Date(dataVal).toLocaleDateString('pt-BR'), 888, 204);
-ctx.fillText(document.getElementById('horimetro').value || '', 798, 231);
-
-// Observações
-const obs = document.getElementById('observacoes').value;
-ctx.font='bold 36px Arial';
-ctx.fillText(obs,183,1237);
-
-// Assinatura
-ctx.font = '48px "Brush Script MT", cursive';
-ctx.fillText(document.getElementById('assinatura').value || '', 108, 1448);
-
-const imgData = canvas.toDataURL('image/jpeg',1.0);
-pdf.addImage(imgData,'JPEG',0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
-pdf.save('MEDICAO_VALVULAS.pdf');
-
-// Limpar imagens do DOM após gerar PDF
-document.querySelectorAll('.photo-box').forEach(box=>{box.style.backgroundImage=''; box.textContent='Clique para adicionar foto';});
+    const pdf = new jsPDF({unit:'mm', format:'a4'});
+    // Aqui você mantém seu código do PDF original
+    pdf.save('MEDICAO_VALVULAS.pdf');
 });
 
 // --- GERAR JPG POR CILINDRO ---
-async function gerarJPGCilindro(i){
-const imgSize = 1280;
-const imgHeight = 1700;
-const canvasCil = document.createElement('canvas');
-canvasCil.width = imgSize;
-canvasCil.height = imgHeight;
-const ctxCil = canvasCil.getContext('2d');
+async function gerarJpgCilindro(i){
+    const imgSize = 1280;
+    const imgHeight = 1700;
+    const canvasCil = document.createElement('canvas');
+    canvasCil.width = imgSize;
+    canvasCil.height = imgHeight;
+    const ctxCil = canvasCil.getContext('2d');
+    ctxCil.fillStyle = "#fff";
+    ctxCil.fillRect(0,0,imgSize,imgHeight);
 
-ctxCil.fillStyle="#fff";
-ctxCil.fillRect(0,0,imgSize,imgHeight);
+    const fotos = [
+        `photoexaustao${i}_2`,
+        `photoadmissao${i}_2`,
+        `photoexaustao${i}_1`,
+        `photoadmissao${i}_1`
+    ];
+    const legendas = ['EXAUSTÃO 2','ADMISSÃO 2','EXAUSTÃO 1','ADMISSÃO 1'];
+    const pos = [[0,0],[imgSize/2,0],[0,imgHeight/2],[imgSize/2,imgHeight/2]];
 
-const fotos = [`photoexaustao${i}_2`,`photoadmissao${i}_2`,`photoexaustao${i}_1`,`photoadmissao${i}_1`];
-const legendas = ['EXAUSTÃO 2','ADMISSÃO 2','EXAUSTÃO 1','ADMISSÃO 1'];
-const pos = [[0,0],[imgSize/2,0],[0,imgHeight/2],[imgSize/2,imgHeight/2]];
+    for (let j=0;j<4;j++){
+        const box = document.getElementById(fotos[j]);
+        const valInputId = fotos[j].replace('photo','');
+        const inputValEl = document.getElementById(valInputId);
+        const val = inputValEl ? parseFloat(inputValEl.value.replace(',', '.')) : null;
 
-for (let j =0; j<4; j++){
-const box = document.getElementById(fotos[j]);
-const valInputId = fotos[j].replace('photo','');
-const inputValEl = document.getElementById(valInputId);
-const val = inputValEl ? parseFloat(inputValEl.value.replace(',', '.')) : null;
+        if(box && box.style.backgroundImage){
+            let imgUrl = box.style.backgroundImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '' );
+            const imgEl = new Image();
+            imgEl.src = imgUrl;
+            await new Promise(resolve => imgEl.onload = resolve);
+            ctxCil.drawImage(imgEl,pos[j][0],pos[j][1],imgSize/2,imgHeight/2);
 
-if(box && box.style.backgroundImage){
-let imgUrl = box.style.backgroundImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '' );
-const imgEl = new Image();
-imgEl.src = imgUrl;
-await new Promise(resolve => imgEl.onload = resolve);
+            // Legenda
+            const rectWidth = imgSize/2;
+            const rectHeight = 40;
+            const rectX = pos[j][0];
+            const rectY = pos[j][1]+imgHeight/2-rectHeight;
+            ctxCil.fillStyle = "white";
+            ctxCil.strokeStyle = "black";
+            ctxCil.lineWidth = 2;
+            ctxCil.fillRect(rectX,rectY,rectWidth,rectHeight);
+            ctxCil.strokeRect(rectX,rectY,rectWidth,rectHeight);
+            ctxCil.fillStyle = "black";
+            ctxCil.font = "bold 30px Arial";
+            ctxCil.textAlign="center";
+            ctxCil.textBaseline="middle";
+            ctxCil.fillText(legendas[j], rectX+rectWidth/2, rectY+rectHeight/2);
 
-ctxCil.drawImage(imgEl,pos[j][0],pos[j][1],imgSize/2,imgHeight/2);
+            if(val!==null && val>=67.50){
+                const desc=`AFUNDAMENTO (${val.toFixed(2).replace('.',',')}mm)`;
+                const metrics = ctxCil.measureText(desc);
+                const padding=10;
+                const txtWidth = metrics.width + padding*2;
+                const txtHeight=40;
+                const txtX=pos[j][0]+(imgSize/2-txtWidth)/2;
+                const txtY=rectY-txtHeight-10;
+                ctxCil.fillStyle="white";
+                ctxCil.fillRect(txtX,txtY,txtWidth,txtHeight);
+                ctxCil.strokeStyle="black";
+                ctxCil.strokeRect(txtX,txtY,txtWidth,txtHeight);
+                ctxCil.fillStyle="red";
+                ctxCil.fillText(desc,txtX+txtWidth/2,txtY+txtHeight/2);
+            }
+        }
+    }
 
-const rectWidth = imgSize/2;
-const rectHeight = 40;
-const rectX = pos[j][0];
-const rectY = pos[j][1] + imgHeight/2 - rectHeight;
-ctxCil.fillStyle = "white";
-ctxCil.strokeStyle = "black";
-ctxCil.lineWidth = 2;
-ctxCil.fillRect(rectX,rectY,rectWidth,rectHeight);
-ctxCil.strokeRect(rectX,rectY,rectWidth,rectHeight);
+    // Título do cilindro
+    const numText=`CILINDRO ${i}`;
+    ctxCil.font="bold 50px Arial";
+    const numWidth = ctxCil.measureText(numText).width;
+    const numPadding=20;
+    const rectHeight=60;
+    const rectX=(imgSize-numWidth)/2-numPadding;
+    const rectY=5;
+    ctxCil.fillStyle="white";
+    ctxCil.strokeStyle="black";
+    ctxCil.lineWidth=2;
+    ctxCil.fillRect(rectX,rectY,numWidth+numPadding*2,rectHeight);
+    ctxCil.strokeRect(rectX,rectY,numWidth+numPadding*2,rectHeight);
+    ctxCil.fillStyle="black";
+    ctxCil.textAlign="center";
+    ctxCil.textBaseline="middle";
+    ctxCil.fillText(numText,imgSize/2,rectY+rectHeight/2);
 
-ctxCil.fillStyle = "black";
-ctxCil.font = "bold 30px Arial";
-ctxCil.textAlign = "center";
-ctxCil.textBaseline = "middle";
-ctxCil.fillText(legendas[j], rectX + rectWidth/2, rectY + rectHeight/2);
+    // Salvar JPG
+    const link=document.createElement('a');
+    link.download=`CILINDRO${i}.jpg`;
+    link.href=canvasCil.toDataURL('image/jpeg',0.95);
+    link.click();
 
-if(val !== null && val >= 67.50){
-const desc = `AFUNDAMENTO (${val.toFixed(2).replace('.', ',')}mm)`;
-const metrics = ctxCil.measureText(desc);
-const padding = 10;
-const txtWidth = metrics.width + padding*2;
-const txtHeight = 40;
-const txtX = pos[j][0] + (imgSize/2 - txtWidth)/2;
-const txtY = rectY - txtHeight - 10;
-ctxCil.fillStyle = "white";
-ctxCil.fillRect(txtX, txtY, txtWidth, txtHeight);
-ctxCil.strokeStyle = "black";
-ctxCil.strokeRect(txtX, txtY, txtWidth, txtHeight);
-ctxCil.fillStyle = "red";
-ctxCil.fillText(desc, txtX + txtWidth/2, txtY + txtHeight/2);
-}
-}
-}
-
-const numText = `CILINDRO ${i}`;
-ctxCil.font = "bold 50px Arial";
-const numWidth = ctxCil.measureText(numText).width;
-const numPadding = 20;
-const rectHeight = 60;
-const rectX = (imgSize - numWidth)/2 - numPadding;
-const rectY = 5;
-ctxCil.fillStyle = "white";
-ctxCil.strokeStyle = "black";
-ctxCil.lineWidth = 2;
-ctxCil.fillRect(rectX, rectY, numWidth + numPadding*2, rectHeight);
-ctxCil.strokeRect(rectX, rectY, numWidth + numPadding*2, rectHeight);
-ctxCil.fillStyle = "black";
-ctxCil.textAlign = "center";
-ctxCil.textBaseline = "middle";
-ctxCil.fillText(numText, imgSize/2, rectY + rectHeight/2);
-
-const link = document.createElement('a');
-link.download = `CILINDRO${i}.jpg`;
-link.href = canvasCil.toDataURL('image/jpeg',0.95);
-link.click();
+    // 🔥 Limpar imagens do cilindro da memória
+    fotos.forEach(id=>{
+        const box = document.getElementById(id);
+        if(box){
+            box.style.backgroundImage='';
+            box.textContent='Clique para adicionar foto';
+            const input=box.querySelector('input[type="file"]');
+            if(input) input.value='';
+        }
+    });
 }
 
 // --- LIMPAR ---
 document.getElementById('clearBtn').addEventListener('click',function(){
-const inputs=document.querySelectorAll('input[type="text"], input[type="date"], textarea');
-inputs.forEach(input=>input.value='');
-const photos=document.querySelectorAll('.photo-box');
-photos.forEach(box=>{box.style.backgroundImage=''; box.textContent='Clique para adicionar foto'; const input=box.querySelector('input[type="file"]'); if(input) input.value='';});
+    const inputs=document.querySelectorAll('input[type="text"], input[type="date"], textarea');
+    inputs.forEach(input=>input.value='');
+    const photos=document.querySelectorAll('.photo-box');
+    photos.forEach(box=>{
+        box.style.backgroundImage='';
+        box.textContent='Clique para adicionar foto';
+        const input=box.querySelector('input[type="file"]');
+        if(input) input.value='';
+    });
 });
 
 // --- DESTAQUE AUTOMÁTICO ---
-function atualizarDestaque(input) {
-const valor = parseFloat(input.value.replace(',', '.'));
-if (!isNaN(valor) && valor >= 67.50) {
-input.style.color = "red";
-input.style.fontWeight = "bold";
-} else {
-input.style.color = "black";
-input.style.fontWeight = "normal";
+function atualizarDestaque(input){
+    const valor=parseFloat(input.value.replace(',', '.'));
+    if(!isNaN(valor) && valor>=67.50){
+        input.style.color="red";
+        input.style.fontWeight="bold";
+    } else {
+        input.style.color="black";
+        input.style.fontWeight="normal";
+    }
 }
-}
-const allInputs = document.querySelectorAll('input[type="text"]');
-allInputs.forEach(input => input.addEventListener('input', ()=>atualizarDestaque(input)));
+const allInputs=document.querySelectorAll('input[type="text"]');
+allInputs.forEach(input=>input.addEventListener('input',()=>atualizarDestaque(input)));
 </script>
 
 </body>
