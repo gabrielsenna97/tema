@@ -402,7 +402,47 @@ ASSINATURA DO MECÂNICO:
 </script>
 
 <!-- Aqui começa o seu script atual que gera PDF/JPG e limpa campos -->
+<script>
+const { jsPDF }=window.jspdf;
+...
+</script>
 
+
+<script>
+const { jsPDF }=window.jspdf;
+
+function loadPhoto(event,id){
+const box=document.getElementById('photo'+id);
+const file=event.target.files[0];
+if(file){
+const reader=new FileReader();
+reader.onload=function(e){
+box.style.backgroundImage=`url('${e.target.result}')`;
+box.textContent='';
+}
+reader.readAsDataURL(file);
+}
+}
+
+function removePhoto(id){
+const box = document.getElementById('photo' + id);
+box.style.backgroundImage = '';
+box.textContent = 'Clique para adicionar foto';
+
+// remove o input antigo
+const oldInput = box.querySelector('input[type="file"]');
+if (oldInput) oldInput.remove();
+
+// cria um novo input do zero
+const newInput = document.createElement('input');
+newInput.type = 'file';
+newInput.accept = 'image/*';
+newInput.capture = 'environment';
+newInput.onchange = (event) => loadPhoto(event, id);
+
+// adiciona no box
+box.appendChild(newInput);
+}
 
 // --- GERAR PDF ---
 document.getElementById('generatePdf').addEventListener('click', async function(){
