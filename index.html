@@ -181,7 +181,7 @@ if(metrics.width>maxWidth){ ctx.fillText(line,183,y); line=word+' '; y+=lineHeig
 });
 ctx.fillText(line,183,y);
 // assinatura
-ctx.font='28px "Brush Script MT", cursive';
+ctx.font='40px "Brush Script MT", cursive';
 ctx.fillText(document.getElementById('assinatura').value||'',760,1538);
 const imgData=canvas.toDataURL('image/jpeg',1.0);
 pdf.addImage(imgData,'JPEG',0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
@@ -240,4 +240,5 @@ document.querySelectorAll('input[type="text"]').forEach(input=>input.addEventLis
 
 </body>
 </html>
+
 
