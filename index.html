@@ -1,246 +1,18 @@
-
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Medição de Válvulas do Scania-550</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-body { 
-font-family: Arial, sans-serif; 
-margin: 20px; 
-line-height: 1.6; 
-background-color: #ffffff; /* fundo branco */
-}
-
-h1,h2,h3{ 
-margin-top:20px; 
-margin-bottom:10px; 
-}
-
-h1{ 
-font-size:24px; 
-text-align:center; 
-border-bottom:3px solid #257500; /* laranja forte */
-padding-bottom:10px; 
-color: #ffffff; 
-background-color: #257500; /* laranja forte */
-border-radius:8px;
-}
-
-.valve-container{ 
-display:flex; 
-flex-wrap:wrap; 
-justify-content:space-between; 
-margin-bottom:20px; 
-}
-
-.valve-section{ 
-border:2px solid #257500; /* laranja forte */
-padding:15px; 
-margin-bottom:20px; 
-width:32%; 
-box-sizing:border-box; 
-background-color:#ffffff; /* branco */
-border-radius:10px; 
-box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.valve-type{ 
-font-weight:bold; 
-margin-top:10px; 
-text-align:center; 
-padding:5px; 
-border-radius:4px; 
-background-color:#FFA500; /* laranja */
-color:white; 
-}
-
-.measurement{ 
-text-align:center; 
-margin:10px 0; 
-font-size:18px; 
-background-color:#FFFACD; /* amarelo claro */
-border-radius:8px; 
-padding:5px; 
-font-weight:bold; 
-color:black; 
-}
-
-input[type="text"], input[type="date"], textarea{ 
-width:120px; 
-padding:8px; 
-text-align:center; 
-font-size:16px; 
-border:2px solid #FF8C00; 
-border-radius:4px; 
-}
-
-textarea{ 
-width:100%; 
-height:100px; 
-padding:10px; 
-text-align:left; 
-resize:vertical; 
-border:2px solid #FF8C00; 
-border-radius:6px;
-}
-
-.info-table{ 
-width:100%; 
-margin-bottom:20px; 
-}
-
-.info-table td{ 
-padding:5px 0; 
-text-align:left; 
-}
-
-.signature{ 
-margin-top:50px; 
-border-top:2px solid #FF8C00; 
-width:320px; 
-padding-top:5px; 
-text-align:center; 
-font-weight:bold; 
-font-size:16px; 
-position:relative; 
-}
-
-#assinatura{ 
-position:absolute; 
-top:-36px; 
-left:0; 
-width:320px; 
-border:none; 
-font-size:28px; 
-text-align:center; 
-background:transparent; 
-outline:none; 
-font-family:'Brush Script MT', cursive, Arial, sans-serif; 
-color:#257500; /* vermelho forte */
-}
-
-#assinatura::placeholder{ 
-color:#999; 
-}
-
-.warning{ 
-background-color:#257500; /* vermelho forte */
-padding:10px; 
-border-left:6px solid #257500; /* laranja */
-margin:15px 0; 
-text-align:center; 
-color:white;
-font-weight:bold;
-border-radius:6px;
-}
-
-.obs{ 
-margin-top:30px; 
-font-style:italic; 
-background-color:#FFFACD; 
-padding:10px; 
-border-radius:6px; 
-border:1px solid #FF8C00;
-}
-
-.button-container{ 
-margin-top:20px; 
-text-align:center; 
-}
-
-button{ 
-background-color:#257500; /* laranja forte */
-color:white; 
-border:none; 
-padding:10px 20px; 
-margin:0 10px; 
-font-size:16px; 
-border-radius:6px; 
-cursor:pointer; 
-font-weight:bold;
-transition: all 0.3s ease;
-}
-
-button:hover{
-background-color:#FF4500; /* vermelho forte */
-}
-
-button.clear-btn{ 
-background-color:#FF4500; 
-}
-
-.photo-box{
-width:120px; 
-height:120px; 
-border:2px dashed #FF8C00; 
-margin:10px auto; 
-display:flex; 
-align-items:center; 
-justify-content:center; 
-text-align:center; 
-font-size:12px; 
-color:#666; 
-position:relative; 
-background-size:cover; 
-background-position:center; 
-overflow:hidden; 
-border-radius:10px;
-}
-
-.photo-box input[type="file"]{ 
-position:absolute; 
-width:100%; 
-height:100%; 
-opacity:0; 
-cursor:pointer; 
-}
-
-.remove-photo{ 
-display:inline-block; 
-margin-left:5px; 
-background:#FF4500; 
-color:#fff; 
-border:none; 
-padding:2px 5px; 
-font-size:10px; 
-cursor:pointer; 
-border-radius:4px; 
-vertical-align:top; 
-}
-
-.photo-label { 
-position:absolute; 
-bottom:0; 
-width:100%; 
-text-align:center; 
-background-color:#257500; /* laranja forte */
-color:white; 
-font-weight:bold; 
-font-size:12px; 
-border-top-left-radius:5px; 
-border-top-right-radius:5px; 
-padding:2px 0; 
-}
-
-.cilindro-label { 
-text-align:center; 
-font-weight:bold; 
-color:white; 
-background-color:#257500; /* laranja forte */
-border-radius:10px; 
-padding:5px; 
-margin-bottom:10px; 
-font-size:16px; 
-}
-
-@media(max-width:900px){ 
-.valve-section{ width:100%; } 
-}
+body { font-family: Arial, sans-serif; margin: 20px; background-color:#fff; }
+h1{ text-align:center; color:#fff; background-color:#257500; padding:10px; border-radius:8px; }
+.info-table td{ padding:5px; }
+.photo-box{ width:120px;height:120px;border:2px dashed #FF8C00;margin:10px auto;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:#666;position:relative;background-size:cover;background-position:center;overflow:hidden;border-radius:10px;}
+.photo-box input[type="file"]{ position:absolute;width:100%;height:100%;opacity:0;cursor:pointer;}
+button{ padding:10px 20px; margin:5px; cursor:pointer; border-radius:6px; border:none; background-color:#257500; color:#fff; font-weight:bold; }
+button.clear-btn{ background-color:#FF4500; }
+.cilindro-label { text-align:center; font-weight:bold; color:white; background-color:#257500; border-radius:10px; padding:5px; margin-bottom:10px; font-size:16px; }
 </style>
 </head>
 <body>
@@ -266,391 +38,141 @@ font-size:16px;
 </tr>
 </table>
 
-<div class="warning">
-<h3>MEDIÇÕES ACEITÁVEIS: 64,00mm a <span style="font-weight:bold; color:red;">67,50mm</span></h3>
-<h3>ACIMA DE <span style="font-weight:bold; color:red;">67,50mm</span> DEVE SER CONSIDERADA SUBSTITUIÇÃO</h3>
+<div id="valve-container"></div>
+
+<div>
+<h3>OBSERVAÇÕES</h3>
+<textarea id="observacoes" style="width:100%; height:80px;"></textarea>
 </div>
 
-<div class="valve-container">
-<script>
-const container=document.currentScript.parentNode;
-for(let i=1;i<=6;i++){
-const section=document.createElement('div');
-section.className='valve-section';
-section.innerHTML=`<div class="cilindro-label">${i}º CILINDRO</div>`;
-
-// Layout 2x2
-const layoutDiv = document.createElement('div');
-layoutDiv.style.display='grid';
-layoutDiv.style.gridTemplateColumns='1fr 1fr';
-layoutDiv.style.gridTemplateRows='1fr 1fr';
-layoutDiv.style.gap='10px';
-layoutDiv.style.justifyContent = 'center'; // centraliza horizontalmente
-layoutDiv.style.alignContent = 'center'; // centraliza verticalmente
-
-
-// Definir posições: cima esquerda Exaustão2, cima direita Admissão2, baixo esquerda Exaustão1, baixo direita Admissão1
-const posicoes=[
-{tipo:'exaustao', j:2},
-{tipo:'admissao', j:2},
-{tipo:'exaustao', j:1},
-{tipo:'admissao', j:1}
-];
-
-posicoes.forEach(({tipo,j})=>{
-const tipoNome = tipo==='exaustao'?'EXAUSTÃO':'ADMISSÃO';
-const idPhoto=tipo+i+'_'+j;
-const div = document.createElement('div');
-div.style.textAlign='center';
-div.innerHTML=`
-<div class="measurement"><input type="text" id="${tipo}${i}_${j}" placeholder="${tipoNome} ${j}"></div>
-<div class="photo-box" id="photo${idPhoto}">
-Clique para adicionar foto
-<div class="photo-label">${tipoNome} ${j}</div>
-<input type="file" accept="image/*" capture="environment" onchange="loadPhoto(event,'${idPhoto}')">
-</div>
-<button class="remove-photo" onclick="removePhoto('${idPhoto}')">REMOVER FOTO</button>
-`;
-layoutDiv.appendChild(div);
-});
-
-section.appendChild(layoutDiv);
-container.appendChild(section);
-}
-</script>
+<div>
+<label>ASSINATURA:</label>
+<input type="text" id="assinatura" placeholder="Digite seu nome aqui" style="width:300px;">
 </div>
 
-<div class="obs">
-<p><strong>OBSERVAÇÕES:</strong></p>
-<textarea id="observacoes"></textarea>
-</div>
-
-<div class="button-container">
+<div style="margin-top:20px;">
 <button id="generatePdf">Gerar PDF</button>
-<button id="generateJpg">Gerar JPG</button>
 <button id="clearBtn" class="clear-btn">Limpar</button>
 </div>
 
-<div class="signature">
-ASSINATURA DO MECÂNICO: 
-<input type="text" id="assinatura" placeholder="Digite seu nome aqui" />
-</div>
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBnUkTRstVNgO2APItGXYIgmSGZdwQfxAI",
-    authDomain: "fotos-de-med-de-valvulas.firebaseapp.com",
-    projectId: "fotos-de-med-de-valvulas",
-    storageBucket: "fotos-de-med-de-valvulas.firebasestorage.app",
-    messagingSenderId: "989471886360",
-    appId: "1:989471886360:web:2d3414acfe5ab9bea6876d"
-  };
+// --- Criar seções de cilindros ---
+const container = document.getElementById('valve-container');
+for(let i=1;i<=6;i++){
+  const section = document.createElement('div');
+  section.style.border="2px solid #257500"; section.style.padding="15px"; section.style.marginBottom="20px"; section.style.borderRadius="10px";
+  section.innerHTML=`<div class="cilindro-label">${i}º CILINDRO</div>`;
+  
+  const layoutDiv = document.createElement('div');
+  layoutDiv.style.display='grid';
+  layoutDiv.style.gridTemplateColumns='1fr 1fr';
+  layoutDiv.style.gridTemplateRows='1fr 1fr';
+  layoutDiv.style.gap='10px';
+  
+  const posicoes=[{tipo:'exaustao',j:2},{tipo:'admissao',j:2},{tipo:'exaustao',j:1},{tipo:'admissao',j:1}];
+  
+  posicoes.forEach(({tipo,j})=>{
+    const tipoNome = tipo==='exaustao'?'EXAUSTÃO':'ADMISSÃO';
+    const idPhoto=tipo+i+'_'+j;
+    const div = document.createElement('div');
+    div.style.textAlign='center';
+    div.innerHTML=`
+      <div><input type="text" id="${tipo}${i}_${j}" placeholder="${tipoNome} ${j}" style="width:80px;text-align:center;"></div>
+      <div class="photo-box" id="photo${idPhoto}">Clique para adicionar foto
+        <input type="file" accept="image/*" capture="environment" onchange="loadPhoto(event,'${idPhoto}')">
+      </div>
+      <button onclick="removePhoto('${idPhoto}')">REMOVER FOTO</button>
+    `;
+    layoutDiv.appendChild(div);
+  });
+  
+  const btn = document.createElement('button');
+  btn.textContent = `Gerar JPG Cilindro ${i}`;
+  btn.addEventListener('click',()=>generateJPG(i));
+  
+  section.appendChild(layoutDiv);
+  section.appendChild(btn);
+  container.appendChild(section);
+}
 
-  // Inicializa Firebase
-  firebase.initializeApp(firebaseConfig);
-  const storage = firebase.storage();
-
-  // Função para enviar foto para o Firebase
-  async function uploadPhoto(file, path) {
-    if (!file) return null;
-    const storageRef = storage.ref(path);
-    await storageRef.put(file);
-    const url = await storageRef.getDownloadURL();
-    return url;
-  }
-
-  // Função loadPhoto integrada com Firebase
-  async function loadPhoto(event, id){
-    const box = document.getElementById('photo'+id);
-    const file = event.target.files[0];
-    if(file){
-      const reader = new FileReader();
-      reader.onload = function(e){
-        box.style.backgroundImage = `url('${e.target.result}')`;
-        box.textContent = '';
-      }
-      reader.readAsDataURL(file);
-
-      // Envia para o Firebase
-      const url = await uploadPhoto(file, 'valvulas/'+id);
-      console.log('URL da foto no Firebase:', url);
-    }
-  }
-
-  // Função para remover foto e permitir novo upload
-  function removePhoto(id){
-    const box = document.getElementById('photo' + id);
-    box.style.backgroundImage = '';
-    box.textContent = 'Clique para adicionar foto';
-
-    // Remove input antigo
-    const oldInput = box.querySelector('input[type="file"]');
-    if(oldInput) oldInput.remove();
-
-    // Cria novo input
-    const newInput = document.createElement('input');
-    newInput.type = 'file';
-    newInput.accept = 'image/*';
-    newInput.capture = 'environment';
-    newInput.onchange = async (event) => await loadPhoto(event, id);
-
-    box.appendChild(newInput);
-  }
-</script>
-
-<!-- Aqui começa o seu script atual que gera PDF/JPG e limpa campos -->
-<script>
-const { jsPDF }=window.jspdf;
-...
-</script>
-
-
-<script>
-const { jsPDF }=window.jspdf;
-
+// --- Funções de foto ---
 function loadPhoto(event,id){
-const box=document.getElementById('photo'+id);
-const file=event.target.files[0];
-if(file){
-const reader=new FileReader();
-reader.onload=function(e){
-box.style.backgroundImage=`url('${e.target.result}')`;
-box.textContent='';
-}
-reader.readAsDataURL(file);
-}
+  const box=document.getElementById('photo'+id);
+  const file=event.target.files[0];
+  if(file){
+    const reader=new FileReader();
+    reader.onload=function(e){
+      box.style.backgroundImage=`url('${e.target.result}')`;
+      box.textContent='';
+    }
+    reader.readAsDataURL(file);
+  }
 }
 
 function removePhoto(id){
-const box = document.getElementById('photo' + id);
-box.style.backgroundImage = '';
-box.textContent = 'Clique para adicionar foto';
-
-// remove o input antigo
-const oldInput = box.querySelector('input[type="file"]');
-if (oldInput) oldInput.remove();
-
-// cria um novo input do zero
-const newInput = document.createElement('input');
-newInput.type = 'file';
-newInput.accept = 'image/*';
-newInput.capture = 'environment';
-newInput.onchange = (event) => loadPhoto(event, id);
-
-// adiciona no box
-box.appendChild(newInput);
+  const box = document.getElementById('photo'+id);
+  box.style.backgroundImage=''; box.textContent='Clique para adicionar foto';
+  const oldInput = box.querySelector('input[type="file"]');
+  if(oldInput) oldInput.remove();
+  const newInput = document.createElement('input');
+  newInput.type='file'; newInput.accept='image/*'; newInput.capture='environment';
+  newInput.onchange = (event)=>loadPhoto(event,id);
+  box.appendChild(newInput);
 }
 
-// --- GERAR PDF ---
-document.getElementById('generatePdf').addEventListener('click', async function(){
-const pdf = new jsPDF({unit:'mm', format:'a4'});
-const img = new Image();
-img.crossOrigin = 'anonymous';
-img.src = 'https://raw.githubusercontent.com/gabrielsenna97/tema/main/FORM_194_MEDICAO_DAS_VALVULAS_UTE550_REV0_O_M_2.jpg';
-await new Promise(resolve=>img.onload=resolve);
-
-const canvas = document.createElement('canvas');
-canvas.width = img.width;
-canvas.height = img.height;
-const ctx = canvas.getContext('2d');
-ctx.drawImage(img,0,0);
-
-// Dados principais
-ctx.font = 'bold 18px Arial';
-ctx.fillStyle = 'black';
-ctx.fillText(document.getElementById('mecanico').value || '', 208, 176);
-ctx.fillText(document.getElementById('usina').value || '', 165, 204);
-ctx.fillText(document.getElementById('serie').value || '', 165, 231);
-ctx.fillText('UGD- '+(document.getElementById('ugd').value||''), 590, 262);
-ctx.fillText(document.getElementById('os').value || '', 292, 262);
-const dataVal = document.getElementById('data').value;
-if(dataVal) ctx.fillText(new Date(dataVal).toLocaleDateString('pt-BR'), 888, 204);
-ctx.fillText(document.getElementById('horimetro').value || '', 798, 231);
-
-// Medições
-const limiteMaximo = 67.50;
-const campos = [
-['exaustao1_1',105,616], ['exaustao1_2',105,576], ['admissao1_1',345,628], ['admissao1_2',345,589],
-['exaustao2_1',450,1064], ['exaustao2_2',450,1024], ['admissao2_1',689,1075], ['admissao2_2',689,1038],
-['exaustao3_1',792,617], ['exaustao3_2',792,576], ['admissao3_1',1032,628], ['admissao3_2',1032,589],
-['exaustao4_1',793,1064], ['exaustao4_2',793,1024], ['admissao4_1',1033,1075], ['admissao4_2',1033,1038],
-['exaustao5_1',450,617], ['exaustao5_2',450,576], ['admissao5_1',689,628], ['admissao5_2',689,589],
-['exaustao6_1',105,1064], ['exaustao6_2',105,1024], ['admissao6_1',345,1075], ['admissao6_2',345,1038]
-];
-campos.forEach(([id,x,y])=>{
-const valRaw = document.getElementById(id)?.value || '';
-const valNum = parseFloat(valRaw.replace(',', '.'));
-if(!isNaN(valNum) && valNum >= limiteMaximo){
-ctx.fillStyle='red';
-ctx.font='bold 18px Arial';
-} else {
-ctx.fillStyle='black';
-ctx.font='18px Arial';
+// --- Gerar JPG por cilindro ---
+async function generateJPG(cil){
+  const canvas = document.createElement('canvas');
+  canvas.width = 1280; canvas.height = 1600;
+  const ctx = canvas.getContext('2d');
+  
+  ctx.fillStyle="#fff"; ctx.fillRect(0,0,canvas.width,canvas.height);
+  
+  // Texto principal
+  ctx.fillStyle="black"; ctx.font="24px Arial"; ctx.fillText(`CILINDRO ${cil}`, 50, 50);
+  ctx.font="20px Arial";
+  ctx.fillText(`Mecânico: ${document.getElementById('mecanico').value}`,50,90);
+  ctx.fillText(`USINA: ${document.getElementById('usina').value}`,50,120);
+  ctx.fillText(`Série: ${document.getElementById('serie').value}`,50,150);
+  ctx.fillText(`UGD: ${document.getElementById('ugd').value}`,50,180);
+  ctx.fillText(`OS: ${document.getElementById('os').value}`,50,210);
+  ctx.fillText(`Data: ${document.getElementById('data').value}`,50,240);
+  ctx.fillText(`Horímetro: ${document.getElementById('horimetro').value}`,50,270);
+  ctx.fillText(`Observações: ${document.getElementById('observacoes').value}`,50,300);
+  ctx.fillText(`Assinatura: ${document.getElementById('assinatura').value}`,50,330);
+  
+  // Fotos
+  const fotos = [`photoexaustao${cil}_2`,`photoadmissao${cil}_2`,`photoexaustao${cil}_1`,`photoadmissao${cil}_1`];
+  for(let i=0;i<fotos.length;i++){
+    const box = document.getElementById(fotos[i]);
+    if(box.style.backgroundImage){
+      let imgUrl = box.style.backgroundImage.replace(/^url\(["']?/,'').replace(/["']?\)$/,'');
+      const img = new Image();
+      img.src = imgUrl;
+      await new Promise(resolve=>img.onload=resolve);
+      const x = (i%2)*canvas.width/2;
+      const y = Math.floor(i/2)*(canvas.height/2)+350;
+      ctx.drawImage(img,x,y,canvas.width/2,canvas.height/2);
+      box.style.backgroundImage=''; box.textContent='Clique para adicionar foto';
+    }
+  }
+  
+  // Download
+  const link = document.createElement('a');
+  link.download = `Cilindro${cil}.jpg`;
+  link.href = canvas.toDataURL('image/jpeg',0.95);
+  link.click();
 }
-ctx.fillText(valRaw, x, y);
+
+// --- Limpar campos ---
+document.getElementById('clearBtn').addEventListener('click',()=>{
+  const inputs = document.querySelectorAll('input[type="text"], input[type="date"], textarea');
+  inputs.forEach(input=>input.value='');
+  const photos = document.querySelectorAll('.photo-box');
+  photos.forEach(box=>{box.style.backgroundImage=''; box.textContent='Clique para adicionar foto';});
 });
 
-// Observações com quebra de linha
-const obs = document.getElementById('observacoes').value;
-const maxWidth = 950;
-const lineHeight = 26;
-const words = obs.split(' ');
-let line = '';
-let y = 1237;
-words.forEach(word=>{
-const testLine = line + word + ' ';
-const metrics = ctx.measureText(testLine);
-if(metrics.width > maxWidth){
-ctx.fillText(line, 183, y);
-line = word + ' ';
-y += lineHeight;
-} else {
-line = testLine;
-}
-});
-ctx.fillText(line, 183, y);
-
-// Assinatura
-ctx.font = '28px "Brush Script MT", cursive';
-ctx.fillText(document.getElementById('assinatura').value || '', 108, 1448);
-
-const imgData = canvas.toDataURL('image/jpeg',1.0);
-pdf.addImage(imgData,'JPEG',0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
-pdf.save('MEDICAO_VALVULAS.pdf');
-});
-
-// --- GERAR JPG CORRIGIDO ---
-document.getElementById('generateJpg').addEventListener('click', async function() {
-const imgSize = 1280;
-const imgHeight = 1700;
-
-for (let i = 1; i <= 6; i++) {
-const canvasCil = document.createElement('canvas');
-canvasCil.width = imgSize;
-canvasCil.height = imgHeight;
-const ctxCil = canvasCil.getContext('2d');
-
-ctxCil.fillStyle = "#fff";
-ctxCil.fillRect(0, 0, imgSize, imgHeight);
-
-const fotos = [
-`photoexaustao${i}_2`,
-`photoadmissao${i}_2`,
-`photoexaustao${i}_1`,
-`photoadmissao${i}_1`
-];
-const legendas = ['EXAUSTÃO 2','ADMISSÃO 2','EXAUSTÃO 1','ADMISSÃO 1'];
-const pos = [[0,0],[imgSize/2,0],[0,imgHeight/2],[imgSize/2,imgHeight/2]];
-
-for (let j = 0; j < 4; j++) {
-const box = document.getElementById(fotos[j]);
-const valInputId = fotos[j].replace('photo','');
-const inputValEl = document.getElementById(valInputId);
-const val = inputValEl ? parseFloat(inputValEl.value.replace(',', '.')) : null;
-
-if(box && box.style.backgroundImage){
-let imgUrl = box.style.backgroundImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '' );
-const imgEl = new Image();
-imgEl.src = imgUrl;
-await new Promise(resolve => imgEl.onload = resolve);
-
-ctxCil.drawImage(imgEl,pos[j][0],pos[j][1],imgSize/2,imgHeight/2);
-
-const rectWidth = imgSize/2;
-const rectHeight = 40;
-const rectX = pos[j][0];
-const rectY = pos[j][1] + imgHeight/2 - rectHeight;
-ctxCil.fillStyle = "white";
-ctxCil.strokeStyle = "black";
-ctxCil.lineWidth = 2;
-ctxCil.fillRect(rectX,rectY,rectWidth,rectHeight);
-ctxCil.strokeRect(rectX,rectY,rectWidth,rectHeight);
-
-ctxCil.fillStyle = "black";
-ctxCil.font = "bold 30px Arial";
-ctxCil.textAlign = "center";
-ctxCil.textBaseline = "middle";
-ctxCil.fillText(legendas[j], rectX + rectWidth/2, rectY + rectHeight/2);
-
-if(val !== null && val >= 67.50){
-const desc = `AFUNDAMENTO (${val.toFixed(2).replace('.', ',')}mm)`;
-const metrics = ctxCil.measureText(desc);
-const padding = 10;
-const txtWidth = metrics.width + padding*2;
-const txtHeight = 40;
-const txtX = pos[j][0] + (imgSize/2 - txtWidth)/2;
-const txtY = rectY - txtHeight - 10;
-ctxCil.fillStyle = "white";
-ctxCil.fillRect(txtX, txtY, txtWidth, txtHeight);
-ctxCil.strokeStyle = "black";
-ctxCil.strokeRect(txtX, txtY, txtWidth, txtHeight);
-ctxCil.fillStyle = "red";
-ctxCil.fillText(desc, txtX + txtWidth/2, txtY + txtHeight/2);
-}
-}
-}
-
-const numText = `CILINDRO ${i}`;
-ctxCil.font = "bold 50px Arial";
-const numWidth = ctxCil.measureText(numText).width;
-const numPadding = 20;
-const rectHeight = 60;
-const rectX = (imgSize - numWidth)/2 - numPadding;
-const rectY = 5;
-ctxCil.fillStyle = "white";
-ctxCil.strokeStyle = "black";
-ctxCil.lineWidth = 2;
-ctxCil.fillRect(rectX, rectY, numWidth + numPadding*2, rectHeight);
-ctxCil.strokeRect(rectX, rectY, numWidth + numPadding*2, rectHeight);
-
-ctxCil.fillStyle = "black";
-ctxCil.textAlign = "center";
-ctxCil.textBaseline = "middle";
-ctxCil.fillText(numText, imgSize/2, rectY + rectHeight/2);
-
-const link = document.createElement('a');
-link.download = `CILINDRO${i}.jpg`;
-link.href = canvasCil.toDataURL('image/jpeg',0.95);
-link.click();
-}
-});
-
-// --- LIMPAR ---
-document.getElementById('clearBtn').addEventListener('click',function(){
-const inputs=document.querySelectorAll('input[type="text"], input[type="date"], textarea');
-inputs.forEach(input=>input.value='');
-const photos=document.querySelectorAll('.photo-box');
-photos.forEach(box=>{box.style.backgroundImage=''; box.textContent='Clique para adicionar foto'; const input=box.querySelector('input[type="file"]'); if(input) input.value='';});
-});
-
-// --- DESTAQUE AUTOMÁTICO ---
-function atualizarDestaque(input) {
-const valor = parseFloat(input.value.replace(',', '.'));
-if (!isNaN(valor) && valor >= 67.50) {
-input.style.color = "red";
-input.style.fontWeight = "bold";
-} else {
-input.style.color = "black";
-input.style.fontWeight = "normal";
-}
-}
-const allInputs = document.querySelectorAll('input[type="text"]');
-allInputs.forEach(input => input.addEventListener('input', ()=>atualizarDestaque(input)));
 </script>
-
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
