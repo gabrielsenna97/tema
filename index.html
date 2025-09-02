@@ -199,12 +199,13 @@ async function gerarJpgCilindro(i){
 
       if(val!==null && val>=67.50){
         const desc=`AFUNDAMENTO (${val.toFixed(2).replace('.', ',')}mm)`;
-        const metrics=ctxCil.measureText(desc);
-        const txtX=pos[j][0]+(imgSize/2-metrics.width)/2;
-        const txtY=rectY-50;
-        ctxCil.fillStyle="white"; ctxCil.fillRect(txtX-10,txtY,metrics.width+20,40);
-        ctxCil.strokeStyle="black"; ctxCil.strokeRect(txtX-10,txtY,metrics.width+20,40);
-        ctxCil.fillStyle="red"; ctxCil.fillText(desc,pos[j][0]+imgSize/4,txtY+20);
+        const txtWidth=ctxCil.measureText(desc).width+20;
+        const txtHeight=40;
+        const txtX=pos[j][0]+(imgSize/2-txtWidth)/2;
+        const txtY=rectY-txtHeight-10;
+        ctxCil.fillStyle="white"; ctxCil.fillRect(txtX,txtY,txtWidth,txtHeight);
+        ctxCil.strokeStyle="black"; ctxCil.strokeRect(txtX,txtY,txtWidth,txtHeight);
+        ctxCil.fillStyle="red"; ctxCil.fillText(desc,txtX+txtWidth/2,txtY+txtHeight/2);
       }
     }
   }
@@ -212,17 +213,80 @@ async function gerarJpgCilindro(i){
   const numText=`CILINDRO ${i}`;
   ctxCil.font="bold 50px Arial";
   const numWidth=ctxCil.measureText(numText).width;
+  const numPadding=20; const rectHeight=60;
+  const rectX=(imgSize-numWidth)/2-numPadding; const rectY=5;
   ctxCil.fillStyle="white"; ctxCil.strokeStyle="black"; ctxCil.lineWidth=2;
-  ctxCil.fillRect((imgSize-numWidth)/2-20,5,numWidth+40,60);
-  ctxCil.strokeRect((imgSize-numWidth)/2-20,5,numWidth+40,60);
+  ctxCil.fillRect(rectX,rectY,numWidth+numPadding*2,rectHeight);
+  ctxCil.strokeRect(rectX,rectY,numWidth+numPadding*2,rectHeight);
   ctxCil.fillStyle="black"; ctxCil.textAlign="center"; ctxCil.textBaseline="middle";
-  ctxCil.fillText(numText,imgSize/2,35);
+  ctxCil.fillText(numText,imgSize/2,rectY+rectHeight/2);
 
   const link=document.createElement('a');
   link.download=`CILINDRO${i}.jpg`;
-  link.href=canvasCil.toDataURL('image/jpeg',0.95);
+  link.href=canvasCil.toDataURL('image/jpeg',1.0);
   link.click();
 }
+
+// Gerar PDF completo
+document.getElementById('generatePdf').addEventListener('click', async function(){
+  const pdf=new jsPDF({unit:'mm',format:'a4'});
+  const img=new Image();
+  img.crossOrigin='anonymous';
+  img.src='https://raw.githubusercontent.com/gabrielsenna97/tema/main/FORM_194_MEDICAO_DAS_VALVULAS_UTE550_REV0_O_M_2.jpg';
+  await new Promise(resolve=>img.onload=resolve);
+
+  const canvas=document.createElement('canvas');
+  canvas.width=img.width; canvas.height=img.height;
+  const ctx=canvas.getContext('2d');
+  ctx.drawImage(img,0,0);
+
+  // Informações
+  ctx.font='bold 18px Arial'; ctx.fillStyle='black';
+  ctx.fillText(document.getElementById('mecanico').value||'',208,176);
+  ctx.fillText(document.getElementById('usina').value||'',165,204);
+  ctx.fillText(document.getElementById('serie').value||'',165,231);
+  ctx.fillText('UGD- '+(document.getElementById('ugd').value||''),590,262);
+  ctx.fillText(document.getElementById('os').value||'',292,262);
+  const dataVal=document.getElementById('data').value;
+  if(dataVal) ctx.fillText(new Date(dataVal).toLocaleDateString('pt-BR'),888,204);
+  ctx.fillText(document.getElementById('horimetro').value||'',798,231);
+
+  // Mediçõess
+  const limiteMaximo=67.50;
+  const campos=[
+    ['exaustao1_1',105,616],['exaustao1_2',105,576],['admissao1_1',345,628],['admissao1_2',345,589],
+    ['exaustao2_1',450,1064],['exaustao2_2',450,1024],['admissao2_1',689,1075],['admissao2_2',689,1038],
+    ['exaustao3_1',792,617],['exaustao3_2',792,576],['admissao3_1',1032,628],['admissao3_2',1032,589],
+    ['exaustao4_1',793,1064],['exaustao4_2',793,1024],['admissao4_1',1033,1075],['admissao4_2',1033,1038],
+    ['exaustao5_1',450,617],['exaustao5_2',450,576],['admissao5_1',689,628],['admissao5_2',689,589],
+    ['exaustao6_1',105,1064],['exaustao6_2',105,1024],['admissao6_1',345,1075],['admissao6_2',345,1038]
+  ];
+  campos.forEach(([id,x,y])=>{
+    const valRaw=document.getElementById(id)?.value||'';
+    const val=parseFloat(valRaw.replace(',','.'));
+    ctx.fillStyle=(!isNaN(val) && val>=limiteMaximo)?'red':'black';
+    ctx.font=(!isNaN(val) && val>=limiteMaximo)?'bold 18px Arial':'18px Arial';
+    ctx.fillText(valRaw,x,y);
+  });
+
+  // Observações
+  const obs=document.getElementById('observacoes').value;
+  const maxWidth=950; const lineHeight=26; const words=obs.split(' '); let line=''; let y=1237;
+  words.forEach(word=>{
+    const testLine=line+word+' ';
+    const metrics=ctx.measureText(testLine);
+    if(metrics.width>maxWidth){ ctx.fillText(line,183,y); line=word+' '; y+=lineHeight; } else { line=testLine; }
+  });
+  ctx.fillText(line,183,y);
+
+  // Assinatura
+  ctx.font='40px "Brush Script MT", cursive';
+  ctx.fillText(document.getElementById('assinatura').value||'',760,1538);
+
+  const imgData=canvas.toDataURL('image/jpeg',1.0);
+  pdf.addImage(imgData,'JPEG',0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
+  pdf.save('MEDICAO_VALVULAS.pdf');
+});
 </script>
 
 <div class="obs"><p><strong>OBSERVAÇÕES:</strong></p><textarea id="observacoes"></textarea></div>
@@ -234,60 +298,6 @@ async function gerarJpgCilindro(i){
 
 <div class="signature">ASSINATURA DO MECÂNICO: 
 <input type="text" id="assinatura" placeholder="Digite seu nome aqui" /></div>
-
-<script>
-const { jsPDF } = window.jspdf;
-
-document.getElementById('generatePdf').addEventListener('click', async function(){
-  const pdf = new jsPDF({unit:'mm', format:'a4'});
-  const img = new Image();
-  img.crossOrigin='anonymous';
-  img.src='https://raw.githubusercontent.com/gabrielsenna97/tema/main/FORM_194_MEDICAO_DAS_VALVULAS_UTE550_REV0_O_M_2.jpg';
-  await new Promise(resolve=>img.onload=resolve);
-
-  const canvas=document.createElement('canvas');
-  canvas.width=img.width; canvas.height=img.height;
-  const ctx=canvas.getContext('2d');
-  ctx.drawImage(img,0,0);
-
-  // dados
-  ctx.font='bold 18px Arial'; ctx.fillStyle='black';
-  ctx.fillText(document.getElementById('mecanico').value||'',208,176);
-  ctx.fillText(document.getElementById('usina').value||'',165,204);
-  ctx.fillText(document.getElementById('serie').value||'',165,231);
-  ctx.fillText('UGD- '+(document.getElementById('ugd').value||''),590,262);
-  ctx.fillText(document.getElementById('os').value||'',292,262);
-  const dataVal=document.getElementById('data').value;
-  if(dataVal) ctx.fillText(new Date(dataVal).toLocaleDateString('pt-BR'),888,204);
-  ctx.fillText(document.getElementById('horimetro').value||'',798,231);
-
-  // medições
-  const limiteMaximo=67.50;
-  const campos=[
-    ['exaustao1_1',105,616],['exaustao1_2',105,576],['admissao1_1',345,628],['admissao1_2',345,589],
-    ['exaustao2_1',450,1064],['exaustao2_2',450,1024],['admissao2_1',689,1075],['admissao2_2',689,1038],
-    ['exaustao3_1',792,617],['exaustao3_2',792,576],['admissao3_1',1032,628],['admissao3_2',1032,589],
-    ['exaustao4_1',793,1064],['exaustao4_2',793,1024],['admissao4_1',1033,1075],['admissao4_2',1033,1038],
-    ['exaustao5_1',450,617],['exaustao5_2',450,576],['admissao5_1',689,628],['admissao5_2',689,589],
-    ['exaustao6_1',105,1064],['exaustao6_2',105,1024],['admissao6_1',345,1075],['admissao6_2',345,1038],
-  ];
-  campos.forEach(([id,x,y])=>{
-    const val=parseFloat(document.getElementById(id)?.value.replace(',','.')||0);
-    if(val>=limiteMaximo){ ctx.fillStyle='red'; ctx.font='bold 14px Arial'; }
-    else{ ctx.fillStyle='black'; ctx.font='14px Arial'; }
-    ctx.fillText(val?val.toFixed(2).replace('.',','):'',x,y);
-  });
-
-  // observações e assinatura
-  ctx.font='14px Arial'; ctx.fillStyle='black';
-  ctx.fillText(document.getElementById('observacoes').value||'', 70, 1200);
-  ctx.fillText(document.getElementById('assinatura').value||'', 130, 1280);
-
-  const imgData=canvas.toDataURL('image/jpeg',1.0);
-  pdf.addImage(imgData,'JPEG',0,0,210,297);
-  pdf.save('Medicao_Valvulas.pdf');
-});
-</script>
 
 </body>
 </html>
