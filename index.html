@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -117,76 +118,120 @@ container.appendChild(section);
 const { jsPDF }=window.jspdf;
 
 function loadPhoto(event,id){
-    const box = document.getElementById('photo'+id);
-    const file = event.target.files[0];
-    if(file){
-        box.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
-        box.textContent = '';
-    }
+const box=document.getElementById('photo'+id);
+const file=event.target.files[0];
+if(file){
+const reader=new FileReader();
+reader.onload=function(e){ box.style.backgroundImage=`url('${e.target.result}')`; box.textContent=''; }
+reader.readAsDataURL(file);
 }
-
+}
 function removePhoto(id){
-    const box = document.getElementById('photo' + id);
-    box.style.backgroundImage = '';
-    box.textContent = 'Clique para adicionar foto';
-    const oldInput = box.querySelector('input[type="file"]'); 
-    if(oldInput) oldInput.remove();
-    const newInput = document.createElement('input'); 
-    newInput.type='file'; newInput.accept='image/*'; newInput.capture='environment'; 
-    newInput.onchange=(event)=>loadPhoto(event,id); 
-    box.appendChild(newInput);
+const box = document.getElementById('photo' + id);
+box.style.backgroundImage = '';
+box.textContent = 'Clique para adicionar foto';
+const oldInput = box.querySelector('input[type="file"]'); if(oldInput) oldInput.remove();
+const newInput = document.createElement('input'); newInput.type='file'; newInput.accept='image/*'; newInput.capture='environment'; newInput.onchange=(event)=>loadPhoto(event,id); box.appendChild(newInput);
 }
 
 // --- GERAR PDF ---
 document.getElementById('generatePdf').addEventListener('click', async function(){
-    const pdf = new jsPDF({unit:'mm', format:'a4'});
-    const img = new Image();
-    img.crossOrigin='anonymous';
-    img.src='https://raw.githubusercontent.com/gabrielsenna97/tema/main/FORM_194_MEDICAO_DAS_VALVULAS_UTE550_REV0_O_M_2.jpg';
-    await new Promise(resolve=>img.onload=resolve);
-    const canvas=document.createElement('canvas');
-    canvas.width=img.width; canvas.height=img.height;
-    const ctx=canvas.getContext('2d');
-    ctx.drawImage(img,0,0);
-    // (o restante do código do PDF continua igual)
-    const imgData=canvas.toDataURL('image/jpeg',1.0);
-    pdf.addImage(imgData,'JPEG',0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
-    pdf.save('MEDICAO_VALVULAS.pdf');
+const pdf = new jsPDF({unit:'mm', format:'a4'});
+const img = new Image();
+img.crossOrigin='anonymous';
+img.src='https://raw.githubusercontent.com/gabrielsenna97/tema/main/FORM_194_MEDICAO_DAS_VALVULAS_UTE550_REV0_O_M_2.jpg';
+await new Promise(resolve=>img.onload=resolve);
+const canvas=document.createElement('canvas');
+canvas.width=img.width; canvas.height=img.height;
+const ctx=canvas.getContext('2d');
+ctx.drawImage(img,0,0);
+// dados
+ctx.font='bold 18px Arial'; ctx.fillStyle='black';
+ctx.fillText(document.getElementById('mecanico').value||'',208,176);
+ctx.fillText(document.getElementById('usina').value||'',165,204);
+ctx.fillText(document.getElementById('serie').value||'',165,231);
+ctx.fillText('UGD- '+(document.getElementById('ugd').value||''),590,262);
+ctx.fillText(document.getElementById('os').value||'',292,262);
+const dataVal=document.getElementById('data').value;
+if(dataVal) ctx.fillText(new Date(dataVal).toLocaleDateString('pt-BR'),888,204);
+ctx.fillText(document.getElementById('horimetro').value||'',798,231);
+// medições
+const limiteMaximo=67.50;
+const campos=[
+['exaustao1_1',105,616],['exaustao1_2',105,576],['admissao1_1',345,628],['admissao1_2',345,589],
+['exaustao2_1',450,1064],['exaustao2_2',450,1024],['admissao2_1',689,1075],['admissao2_2',689,1038],
+['exaustao3_1',792,617],['exaustao3_2',792,576],['admissao3_1',1032,628],['admissao3_2',1032,589],
+['exaustao4_1',793,1064],['exaustao4_2',793,1024],['admissao4_1',1033,1075],['admissao4_2',1033,1038],
+['exaustao5_1',450,617],['exaustao5_2',450,576],['admissao5_1',689,628],['admissao5_2',689,589],
+['exaustao6_1',105,1064],['exaustao6_2',105,1024],['admissao6_1',345,1075],['admissao6_2',345,1038]
+];
+campos.forEach(([id,x,y])=>{
+const valRaw=document.getElementById(id)?.value||'';
+const valNum=parseFloat(valRaw.replace(',', '.'));
+ctx.fillStyle=(!isNaN(valNum) && valNum>=limiteMaximo)?'red':'black';
+ctx.font=(!isNaN(valNum) && valNum>=limiteMaximo)?'bold 18px Arial':'18px Arial';
+ctx.fillText(valRaw,x,y);
+});
+// observações
+const obs=document.getElementById('observacoes').value;
+const maxWidth=950; const lineHeight=26; const words=obs.split(' '); let line=''; let y=1237;
+words.forEach(word=>{
+const testLine=line+word+' ';
+const metrics=ctx.measureText(testLine);
+if(metrics.width>maxWidth){ ctx.fillText(line,183,y); line=word+' '; y+=lineHeight; } else { line=testLine; }
+});
+ctx.fillText(line,183,y);
+// assinatura
+ctx.font='40px "Brush Script MT", cursive';
+ctx.fillText(document.getElementById('assinatura').value||'',760,1538);
+const imgData=canvas.toDataURL('image/jpeg',1.0);
+pdf.addImage(imgData,'JPEG',0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
+pdf.save('MEDICAO_VALVULAS.pdf');
 });
 
 // --- GERAR JPG POR CILINDRO ---
 async function gerarJpgCilindro(i){
-    const imgSize=1280; const imgHeight=1700; const canvasCil=document.createElement('canvas'); canvasCil.width=imgSize; canvasCil.height=imgHeight; 
-    const ctxCil=canvasCil.getContext('2d');
-    ctxCil.fillStyle="#fff"; ctxCil.fillRect(0,0,imgSize,imgHeight);
-    const fotos=[`photoexaustao${i}_2`,`photoadmissao${i}_2`,`photoexaustao${i}_1`,`photoadmissao${i}_1`];
-    const legendas=['EXAUSTÃO 2','ADMISSÃO 2','EXAUSTÃO 1','ADMISSÃO 1'];
-    const pos=[[0,0],[imgSize/2,0],[0,imgHeight/2],[imgSize/2,imgHeight/2]];
-    for(let j=0;j<4;j++){
-        const box=document.getElementById(fotos[j]);
-        const valInputId=fotos[j].replace('photo','');
-        const inputValEl=document.getElementById(valInputId);
-        const val=inputValEl?parseFloat(inputValEl.value.replace(',', '.')):null;
-       if(box && box.querySelector('input[type="file"]')?.files[0]){
-    const file = box.querySelector('input[type="file"]').files[0];
-    const imgEl = new Image();
-    imgEl.src = URL.createObjectURL(file); // usa a imagem original
-    await new Promise(resolve => imgEl.onload = resolve);
-    ctxCil.drawImage(imgEl, pos[j][0], pos[j][1], imgSize/2, imgHeight/2);
-    URL.revokeObjectURL(imgEl.src); // libera memória
+const imgSize=1280; const imgHeight=1700; const canvasCil=document.createElement('canvas'); canvasCil.width=imgSize; canvasCil.height=imgHeight; const ctxCil=canvasCil.getContext('2d');
+ctxCil.fillStyle="#fff"; ctxCil.fillRect(0,0,imgSize,imgHeight);
+const fotos=[`photoexaustao${i}_2`,`photoadmissao${i}_2`,`photoexaustao${i}_1`,`photoadmissao${i}_1`];
+const legendas=['EXAUSTÃO 2','ADMISSÃO 2','EXAUSTÃO 1','ADMISSÃO 1'];
+const pos=[[0,0],[imgSize/2,0],[0,imgHeight/2],[imgSize/2,imgHeight/2]];
+for(let j=0;j<4;j++){
+const box=document.getElementById(fotos[j]);
+const valInputId=fotos[j].replace('photo','');
+const inputValEl=document.getElementById(valInputId);
+const val=inputValEl?parseFloat(inputValEl.value.replace(',', '.')):null;
+if(box && box.style.backgroundImage){
+let imgUrl=box.style.backgroundImage.replace(/^url\(["']?/,'').replace(/["']?\)$/,''); const imgEl=new Image(); imgEl.src=imgUrl;
+await new Promise(resolve=>imgEl.onload=resolve);
+ctxCil.drawImage(imgEl,pos[j][0],pos[j][1],imgSize/2,imgHeight/2);
+const rectWidth=imgSize/2; const rectHeight=40; const rectX=pos[j][0]; const rectY=pos[j][1]+imgHeight/2-rectHeight;
+ctxCil.fillStyle="white"; ctxCil.strokeStyle="black"; ctxCil.lineWidth=2;
+ctxCil.fillRect(rectX,rectY,rectWidth,rectHeight); ctxCil.strokeRect(rectX,rectY,rectWidth,rectHeight);
+ctxCil.fillStyle="black"; ctxCil.font="bold 30px Arial"; ctxCil.textAlign="center"; ctxCil.textBaseline="middle";
+ctxCil.fillText(legendas[j],rectX+rectWidth/2,rectY+rectHeight/2);
+if(val!==null && val>=67.50){
+const desc=`AFUNDAMENTO (${val.toFixed(2).replace('.', ',')}mm)`; const metrics=ctxCil.measureText(desc); const padding=10;
+const txtWidth=metrics.width+padding*2; const txtHeight=40; const txtX=pos[j][0]+(imgSize/2-txtWidth)/2; const txtY=rectY-txtHeight-10;
+ctxCil.fillStyle="white"; ctxCil.fillRect(txtX,txtY,txtWidth,txtHeight); ctxCil.strokeStyle="black"; ctxCil.strokeRect(txtX,txtY,txtWidth,txtHeight);
+ctxCil.fillStyle="red"; ctxCil.fillText(desc,txtX+txtWidth/2,txtY+txtHeight/2);
 }
-
-    }
-    const link=document.createElement('a'); 
-    link.download=`CILINDRO${i}.jpg`; 
-    link.href=canvasCil.toDataURL('image/jpeg',1.0); // QUALIDADE TOTAL
-    link.click();
+// --- LIMPEZA DA FOTO NA TELA ---
+box.style.backgroundImage = '';
+box.textContent = 'Clique para adicionar foto';
+}
+}
+const numText=`CILINDRO ${i}`; ctxCil.font="bold 50px Arial"; const numWidth=ctxCil.measureText(numText).width; const numPadding=20; const rectHeight=60;
+const rectX=(imgSize-numWidth)/2-numPadding; const rectY=5;
+ctxCil.fillStyle="white"; ctxCil.strokeStyle="black"; ctxCil.lineWidth=2; ctxCil.fillRect(rectX,rectY,numWidth+numPadding*2,rectHeight); ctxCil.strokeRect(rectX,rectY,numWidth+numPadding*2,rectHeight);
+ctxCil.fillStyle="black"; ctxCil.textAlign="center"; ctxCil.textBaseline="middle"; ctxCil.fillText(numText,imgSize/2,rectY+rectHeight/2);
+const link=document.createElement('a'); link.download=`CILINDRO${i}.jpg`; link.href=canvasCil.toDataURL('image/jpeg',0.95); link.click();
 }
 
 // --- LIMPAR ---
 document.getElementById('clearBtn').addEventListener('click',function(){
-    document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(input=>input.value='');
-    document.querySelectorAll('.photo-box').forEach(box=>{box.style.backgroundImage=''; box.textContent='Clique para adicionar foto'; const input=box.querySelector('input[type="file"]'); if(input) input.value='';});
+document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(input=>input.value='');
+document.querySelectorAll('.photo-box').forEach(box=>{box.style.backgroundImage=''; box.textContent='Clique para adicionar foto'; const input=box.querySelector('input[type="file"]'); if(input) input.value='';});
 });
 
 // --- DESTAQUE AUTOMÁTICO ---
@@ -196,4 +241,5 @@ document.querySelectorAll('input[type="text"]').forEach(input=>input.addEventLis
 
 </body>
 </html>
+
 
