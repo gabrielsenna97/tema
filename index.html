@@ -117,25 +117,11 @@ container.appendChild(section);
 const { jsPDF }=window.jspdf;
 
 function loadPhoto(event,id){
-    const box=document.getElementById('photo'+id);
-    const file=event.target.files[0];
+    const box = document.getElementById('photo'+id);
+    const file = event.target.files[0];
     if(file){
-        const reader=new FileReader();
-        reader.onload=function(e){
-            // REDUZ A QUALIDADE PARA VISUALIZAÇÃO (miniatura)
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = 100;
-                canvas.height = 100;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img,0,0,100,100);
-                box.style.backgroundImage=`url(${canvas.toDataURL('image/jpeg',0.7)})`;
-                box.textContent='';
-            }
-            img.src = e.target.result;
-        }
-        reader.readAsDataURL(file);
+        box.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
+        box.textContent = '';
     }
 }
 
@@ -181,17 +167,15 @@ async function gerarJpgCilindro(i){
         const valInputId=fotos[j].replace('photo','');
         const inputValEl=document.getElementById(valInputId);
         const val=inputValEl?parseFloat(inputValEl.value.replace(',', '.')):null;
-        if(box && box.style.backgroundImage){
-            let imgUrl=box.style.backgroundImage.replace(/^url\(["']?/,'').replace(/["']?\)$/,''); 
-            const imgEl=new Image(); 
-            imgEl.src=imgUrl.replace(/^data:image\/jpeg;base64,/, ''); // remove compressão da miniatura
-            await new Promise(resolve=>imgEl.onload=resolve);
-            // usa a imagem original para download
-            ctxCil.drawImage(imgEl,pos[j][0],pos[j][1],imgSize/2,imgHeight/2);
-            // (restante do código de legenda e afundamento continua igual)
-            box.style.backgroundImage = '';
-            box.textContent = 'Clique para adicionar foto';
-        }
+       if(box && box.querySelector('input[type="file"]')?.files[0]){
+    const file = box.querySelector('input[type="file"]').files[0];
+    const imgEl = new Image();
+    imgEl.src = URL.createObjectURL(file); // usa a imagem original
+    await new Promise(resolve => imgEl.onload = resolve);
+    ctxCil.drawImage(imgEl, pos[j][0], pos[j][1], imgSize/2, imgHeight/2);
+    URL.revokeObjectURL(imgEl.src); // libera memória
+}
+
     }
     const link=document.createElement('a'); 
     link.download=`CILINDRO${i}.jpg`; 
@@ -212,3 +196,4 @@ document.querySelectorAll('input[type="text"]').forEach(input=>input.addEventLis
 
 </body>
 </html>
+
