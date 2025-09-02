@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -30,7 +31,6 @@ button.clear-btn{ background-color:#FF4500; }
 .remove-photo{ display:inline-block; margin-left:5px; background:#FF4500; color:#fff; border:none; padding:2px 5px; font-size:10px; cursor:pointer; border-radius:4px; vertical-align:top; }
 .photo-label { position:absolute; bottom:0; width:100%; text-align:center; background-color:#257500; color:white; font-weight:bold; font-size:12px; border-top-left-radius:5px; border-top-right-radius:5px; padding:2px 0; }
 .cilindro-label { text-align:center; font-weight:bold; color:white; background-color:#257500; border-radius:10px; padding:5px; margin-bottom:10px; font-size:16px; }
-.preview-btn{ margin-top:5px; background:#FF8C00; font-size:12px; padding:4px 8px; }
 @media(max-width:900px){ .valve-section{ width:100%; } }
 </style>
 </head>
@@ -65,38 +65,41 @@ button.clear-btn{ background-color:#FF4500; }
 <div class="valve-container">
 <script>
 const container=document.currentScript.parentNode;
-const fotoOriginal={};
 for(let i=1;i<=6;i++){
-  const section=document.createElement('div');
-  section.className='valve-section';
-  section.innerHTML=`<div class="cilindro-label">${i}º CILINDRO</div>`;
-  const layoutDiv = document.createElement('div');
-  layoutDiv.style.display='grid';
-  layoutDiv.style.gridTemplateColumns='1fr 1fr';
-  layoutDiv.style.gridTemplateRows='1fr 1fr';
-  layoutDiv.style.gap='10px';
-  const posicoes=[{tipo:'exaustao', j:2},{tipo:'admissao', j:2},{tipo:'exaustao', j:1},{tipo:'admissao', j:1}];
-  posicoes.forEach(({tipo,j})=>{
-    const tipoNome = tipo==='exaustao'?'EXAUSTÃO':'ADMISSÃO';
-    const idPhoto=tipo+i+'_'+j;
-    const div = document.createElement('div');
-    div.style.textAlign='center';
-    div.innerHTML=`
-      <div class="measurement"><input type="text" id="${tipo}${i}_${j}" placeholder="${tipoNome} ${j}"></div>
-      <div class="photo-box" id="photo${idPhoto}">Clique para adicionar foto
-        <div class="photo-label">${tipoNome} ${j}</div>
-        <input type="file" accept="image/*" capture="environment" onchange="loadPhotoPreview(event,'${idPhoto}')">
-      </div>
-      <button class="remove-photo" onclick="removePhoto('${idPhoto}')">REMOVER FOTO</button>
-      <button class="preview-btn" onclick="openPreview('${idPhoto}')">Pré-visualizar</button>`;
-    layoutDiv.appendChild(div);
-  });
-  section.appendChild(layoutDiv);
-  const btnJpg = document.createElement('button');
-  btnJpg.textContent = `Gerar JPG CILINDRO ${i}`;
-  btnJpg.onclick = () => gerarJpgCilindro(i);
-  section.appendChild(btnJpg);
-  container.appendChild(section);
+const section=document.createElement('div');
+section.className='valve-section';
+section.innerHTML=`<div class="cilindro-label">${i}º CILINDRO</div>`;
+const layoutDiv = document.createElement('div');
+layoutDiv.style.display='grid';
+layoutDiv.style.gridTemplateColumns='1fr 1fr';
+layoutDiv.style.gridTemplateRows='1fr 1fr';
+layoutDiv.style.gap='10px';
+const posicoes=[
+{tipo:'exaustao', j:2},
+{tipo:'admissao', j:2},
+{tipo:'exaustao', j:1},
+{tipo:'admissao', j:1}
+];
+posicoes.forEach(({tipo,j})=>{
+const tipoNome = tipo==='exaustao'?'EXAUSTÃO':'ADMISSÃO';
+const idPhoto=tipo+i+'_'+j;
+const div = document.createElement('div');
+div.style.textAlign='center';
+div.innerHTML=`
+<div class="measurement"><input type="text" id="${tipo}${i}_${j}" placeholder="${tipoNome} ${j}"></div>
+<div class="photo-box" id="photo${idPhoto}">Clique para adicionar foto
+<div class="photo-label">${tipoNome} ${j}</div>
+<input type="file" accept="image/*" capture="environment" onchange="loadPhoto(event,'${idPhoto}')"></div>
+<button class="remove-photo" onclick="removePhoto('${idPhoto}')">REMOVER FOTO</button>`;
+layoutDiv.appendChild(div);
+});
+section.appendChild(layoutDiv);
+// botão gerar JPG individual
+const btnJpg = document.createElement('button');
+btnJpg.textContent = `Gerar JPG CILINDRO ${i}`;
+btnJpg.onclick = () => gerarJpgCilindro(i);
+section.appendChild(btnJpg);
+container.appendChild(section);
 }
 </script>
 </div>
@@ -112,98 +115,131 @@ for(let i=1;i<=6;i++){
 <input type="text" id="assinatura" placeholder="Digite seu nome aqui" /></div>
 
 <script>
-const { jsPDF } = window.jspdf;
+const { jsPDF }=window.jspdf;
 
-function loadPhotoPreview(event,id){
-  const box=document.getElementById('photo'+id);
-  const file=event.target.files[0];
-  if(file){
-    fotoOriginal[id]=file;
-    const reader=new FileReader();
-    reader.onload=function(e){
-      const img=new Image();
-      img.src=e.target.result;
-      img.onload=()=>{ 
-        const canvas=document.createElement('canvas');
-        const max=100;
-        let w=img.width, h=img.height;
-        if(w>h && w>max){ h*=max/w; w=max; }
-        else if(h>w && h>max){ w*=max/h; h=max; }
-        else if(w>max){ w=h=max; }
-        canvas.width=w; canvas.height=h;
-        const ctx=canvas.getContext('2d'); ctx.drawImage(img,0,0,w,h);
-        box.style.backgroundImage=`url('${canvas.toDataURL()}')`; box.textContent='';
-      }
-    }
-    reader.readAsDataURL(file);
-  }
+function loadPhoto(event,id){
+const box=document.getElementById('photo'+id);
+const file=event.target.files[0];
+if(file){
+const reader=new FileReader();
+reader.onload=function(e){ box.style.backgroundImage=`url('${e.target.result}')`; box.textContent=''; }
+reader.readAsDataURL(file);
 }
-
-function openPreview(id){
-  if(fotoOriginal[id]){
-    const win=window.open();
-    const url=URL.createObjectURL(fotoOriginal[id]);
-    win.document.write(`<img src="${url}" style="max-width:100%;">`);
-  }
 }
-
 function removePhoto(id){
-  const box=document.getElementById('photo'+id);
-  box.style.backgroundImage=''; box.textContent='Clique para adicionar foto';
-  delete fotoOriginal[id];
-  const oldInput = box.querySelector('input[type="file"]'); if(oldInput) oldInput.remove();
-  const newInput=document.createElement('input');
-  newInput.type='file'; newInput.accept='image/*'; newInput.capture='environment';
-  newInput.onchange=(event)=>loadPhotoPreview(event,id);
-  box.appendChild(newInput);
+const box = document.getElementById('photo' + id);
+box.style.backgroundImage = '';
+box.textContent = 'Clique para adicionar foto';
+const oldInput = box.querySelector('input[type="file"]'); if(oldInput) oldInput.remove();
+const newInput = document.createElement('input'); newInput.type='file'; newInput.accept='image/*'; newInput.capture='environment'; newInput.onchange=(event)=>loadPhoto(event,id); box.appendChild(newInput);
 }
 
-async function gerarJpgCilindro(i){
-  const imgSize=1280, imgHeight=1700;
-  const canvas=document.createElement('canvas'); canvas.width=imgSize; canvas.height=imgHeight;
-  const ctx=canvas.getContext('2d'); ctx.fillStyle="#fff"; ctx.fillRect(0,0,imgSize,imgHeight);
-  const fotos=[`exaustao${i}_2`,`admissao${i}_2`,`exaustao${i}_1`,`admissao${i}_1`];
-  const legendas=['EXAUSTÃO 2','ADMISSÃO 2','EXAUSTÃO 1','ADMISSÃO 1'];
-  const pos=[[0,0],[imgSize/2,0],[0,imgHeight/2],[imgSize/2,imgHeight/2]];
-  for(let j=0;j<4;j++){
-    const id=fotos[j]; const box=document.getElementById('photo'+id);
-    const inputValEl=document.getElementById(id); const val=inputValEl?parseFloat(inputValEl.value.replace(',', '.')):null;
-    if(fotoOriginal[id]){
-      const imgEl=new Image(); imgEl.src=URL.createObjectURL(fotoOriginal[id]);
-      await new Promise(resolve=>imgEl.onload=resolve);
-      ctx.drawImage(imgEl,pos[j][0],pos[j][1],imgSize/2,imgHeight/2);
-      const rectWidth=imgSize/2, rectHeight=40, rectX=pos[j][0], rectY=pos[j][1]+imgHeight/2-rectHeight;
-      ctx.fillStyle="white"; ctx.strokeStyle="black"; ctx.lineWidth=2; ctx.fillRect(rectX,rectY,rectWidth,rectHeight); ctx.strokeRect(rectX,rectY,rectWidth,rectHeight);
-      ctx.fillStyle="black"; ctx.font="bold 30px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(legendas[j],rectX+rectWidth/2,rectY+rectHeight/2);
-      if(val!==null && val>=67.50){
-        const desc=`AFUNDAMENTO (${val.toFixed(2).replace('.', ',')}mm)`;
-        const metrics=ctx.measureText(desc); const padding=10;
-        const txtWidth=metrics.width+padding*2, txtHeight=40;
-        const txtX=pos[j][0]+(imgSize/2-txtWidth)/2, txtY=rectY-txtHeight-10;
-        ctx.fillStyle="white"; ctx.fillRect(txtX,txtY,txtWidth,txtHeight);
-        ctx.strokeStyle="black"; ctx.strokeRect(txtX,txtY,txtWidth,txtHeight);
-        ctx.fillStyle="red"; ctx.fillText(desc,txtX+txtWidth/2,txtY+txtHeight/2);
-      }
-    }
-  }
-  const link=document.createElement('a'); link.download=`CILINDRO${i}.jpg`; link.href=canvas.toDataURL('image/jpeg',0.95); link.click();
-}
-
-// LIMPAR
-document.getElementById('clearBtn').addEventListener('click',()=>{
-  document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(input=>input.value='');
-  document.querySelectorAll('.photo-box').forEach(box=>{ box.style.backgroundImage=''; box.textContent='Clique para adicionar foto'; const input=box.querySelector('input[type="file"]'); if(input) input.value=''; });
-  for(let key in fotoOriginal) delete fotoOriginal[key];
+// --- GERAR PDF ---
+document.getElementById('generatePdf').addEventListener('click', async function(){
+const pdf = new jsPDF({unit:'mm', format:'a4'});
+const img = new Image();
+img.crossOrigin='anonymous';
+img.src='https://raw.githubusercontent.com/gabrielsenna97/tema/main/FORM_194_MEDICAO_DAS_VALVULAS_UTE550_REV0_O_M_2.jpg';
+await new Promise(resolve=>img.onload=resolve);
+const canvas=document.createElement('canvas');
+canvas.width=img.width; canvas.height=img.height;
+const ctx=canvas.getContext('2d');
+ctx.drawImage(img,0,0);
+// dados
+ctx.font='bold 18px Arial'; ctx.fillStyle='black';
+ctx.fillText(document.getElementById('mecanico').value||'',208,176);
+ctx.fillText(document.getElementById('usina').value||'',165,204);
+ctx.fillText(document.getElementById('serie').value||'',165,231);
+ctx.fillText('UGD- '+(document.getElementById('ugd').value||''),590,262);
+ctx.fillText(document.getElementById('os').value||'',292,262);
+const dataVal=document.getElementById('data').value;
+if(dataVal) ctx.fillText(new Date(dataVal).toLocaleDateString('pt-BR'),888,204);
+ctx.fillText(document.getElementById('horimetro').value||'',798,231);
+// medições
+const limiteMaximo=67.50;
+const campos=[
+['exaustao1_1',105,616],['exaustao1_2',105,576],['admissao1_1',345,628],['admissao1_2',345,589],
+['exaustao2_1',450,1064],['exaustao2_2',450,1024],['admissao2_1',689,1075],['admissao2_2',689,1038],
+['exaustao3_1',792,617],['exaustao3_2',792,576],['admissao3_1',1032,628],['admissao3_2',1032,589],
+['exaustao4_1',793,1064],['exaustao4_2',793,1024],['admissao4_1',1033,1075],['admissao4_2',1033,1038],
+['exaustao5_1',450,617],['exaustao5_2',450,576],['admissao5_1',689,628],['admissao5_2',689,589],
+['exaustao6_1',105,1064],['exaustao6_2',105,1024],['admissao6_1',345,1075],['admissao6_2',345,1038]
+];
+campos.forEach(([id,x,y])=>{
+const valRaw=document.getElementById(id)?.value||'';
+const valNum=parseFloat(valRaw.replace(',', '.'));
+ctx.fillStyle=(!isNaN(valNum) && valNum>=limiteMaximo)?'red':'black';
+ctx.font=(!isNaN(valNum) && valNum>=limiteMaximo)?'bold 18px Arial':'18px Arial';
+ctx.fillText(valRaw,x,y);
+});
+// observações
+const obs=document.getElementById('observacoes').value;
+const maxWidth=950; const lineHeight=26; const words=obs.split(' '); let line=''; let y=1237;
+words.forEach(word=>{
+const testLine=line+word+' ';
+const metrics=ctx.measureText(testLine);
+if(metrics.width>maxWidth){ ctx.fillText(line,183,y); line=word+' '; y+=lineHeight; } else { line=testLine; }
+});
+ctx.fillText(line,183,y);
+// assinatura
+ctx.font='40px "Brush Script MT", cursive';
+ctx.fillText(document.getElementById('assinatura').value||'',760,1538);
+const imgData=canvas.toDataURL('image/jpeg',1.0);
+pdf.addImage(imgData,'JPEG',0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
+pdf.save('MEDICAO_VALVULAS.pdf');
 });
 
-// DESTAQUE AUTOMÁTICO
-function atualizarDestaque(input){
-  const valor=parseFloat(input.value.replace(',', '.'));
-  if(!isNaN(valor) && valor>=67.50){ input.style.color="red"; input.style.fontWeight="bold"; }
-  else{ input.style.color="black"; input.style.fontWeight="normal"; }
+// --- GERAR JPG POR CILINDRO ---
+async function gerarJpgCilindro(i){
+const imgSize=1280; const imgHeight=1700; const canvasCil=document.createElement('canvas'); canvasCil.width=imgSize; canvasCil.height=imgHeight; const ctxCil=canvasCil.getContext('2d');
+ctxCil.fillStyle="#fff"; ctxCil.fillRect(0,0,imgSize,imgHeight);
+const fotos=[`photoexaustao${i}_2`,`photoadmissao${i}_2`,`photoexaustao${i}_1`,`photoadmissao${i}_1`];
+const legendas=['EXAUSTÃO 2','ADMISSÃO 2','EXAUSTÃO 1','ADMISSÃO 1'];
+const pos=[[0,0],[imgSize/2,0],[0,imgHeight/2],[imgSize/2,imgHeight/2]];
+for(let j=0;j<4;j++){
+const box=document.getElementById(fotos[j]);
+const valInputId=fotos[j].replace('photo','');
+const inputValEl=document.getElementById(valInputId);
+const val=inputValEl?parseFloat(inputValEl.value.replace(',', '.')):null;
+if(box && box.style.backgroundImage){
+let imgUrl=box.style.backgroundImage.replace(/^url\(["']?/,'').replace(/["']?\)$/,''); const imgEl=new Image(); imgEl.src=imgUrl;
+await new Promise(resolve=>imgEl.onload=resolve);
+ctxCil.drawImage(imgEl,pos[j][0],pos[j][1],imgSize/2,imgHeight/2);
+const rectWidth=imgSize/2; const rectHeight=40; const rectX=pos[j][0]; const rectY=pos[j][1]+imgHeight/2-rectHeight;
+ctxCil.fillStyle="white"; ctxCil.strokeStyle="black"; ctxCil.lineWidth=2;
+ctxCil.fillRect(rectX,rectY,rectWidth,rectHeight); ctxCil.strokeRect(rectX,rectY,rectWidth,rectHeight);
+ctxCil.fillStyle="black"; ctxCil.font="bold 30px Arial"; ctxCil.textAlign="center"; ctxCil.textBaseline="middle";
+ctxCil.fillText(legendas[j],rectX+rectWidth/2,rectY+rectHeight/2);
+if(val!==null && val>=67.50){
+const desc=`AFUNDAMENTO (${val.toFixed(2).replace('.', ',')}mm)`; const metrics=ctxCil.measureText(desc); const padding=10;
+const txtWidth=metrics.width+padding*2; const txtHeight=40; const txtX=pos[j][0]+(imgSize/2-txtWidth)/2; const txtY=rectY-txtHeight-10;
+ctxCil.fillStyle="white"; ctxCil.fillRect(txtX,txtY,txtWidth,txtHeight); ctxCil.strokeStyle="black"; ctxCil.strokeRect(txtX,txtY,txtWidth,txtHeight);
+ctxCil.fillStyle="red"; ctxCil.fillText(desc,txtX+txtWidth/2,txtY+txtHeight/2);
 }
+// --- LIMPEZA DA FOTO NA TELA ---
+box.style.backgroundImage = '';
+box.textContent = 'Clique para adicionar foto';
+}
+}
+const numText=`CILINDRO ${i}`; ctxCil.font="bold 50px Arial"; const numWidth=ctxCil.measureText(numText).width; const numPadding=20; const rectHeight=60;
+const rectX=(imgSize-numWidth)/2-numPadding; const rectY=5;
+ctxCil.fillStyle="white"; ctxCil.strokeStyle="black"; ctxCil.lineWidth=2; ctxCil.fillRect(rectX,rectY,numWidth+numPadding*2,rectHeight); ctxCil.strokeRect(rectX,rectY,numWidth+numPadding*2,rectHeight);
+ctxCil.fillStyle="black"; ctxCil.textAlign="center"; ctxCil.textBaseline="middle"; ctxCil.fillText(numText,imgSize/2,rectY+rectHeight/2);
+const link=document.createElement('a'); link.download=`CILINDRO${i}.jpg`; link.href=canvasCil.toDataURL('image/jpeg',0.95); link.click();
+}
+
+// --- LIMPAR ---
+document.getElementById('clearBtn').addEventListener('click',function(){
+document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(input=>input.value='');
+document.querySelectorAll('.photo-box').forEach(box=>{box.style.backgroundImage=''; box.textContent='Clique para adicionar foto'; const input=box.querySelector('input[type="file"]'); if(input) input.value='';});
+});
+
+// --- DESTAQUE AUTOMÁTICO ---
+function atualizarDestaque(input){ const valor=parseFloat(input.value.replace(',', '.')); if(!isNaN(valor)&&valor>=67.50){ input.style.color="red"; input.style.fontWeight="bold"; } else { input.style.color="black"; input.style.fontWeight="normal"; } }
 document.querySelectorAll('input[type="text"]').forEach(input=>input.addEventListener('input',()=>atualizarDestaque(input)));
 </script>
 
 </body>
 </html>
+
+
