@@ -132,7 +132,7 @@ function loadPhotoPreview(event,id){
       img.src = e.target.result;
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const maxSize = 200; // tamanho máximo de visualização
+        const maxSize = 100; // tamanho máximo de visualização
         let w = img.width;
         let h = img.height;
         if(w>h && w>maxSize){ h=h*(maxSize/w); w=maxSize; }
@@ -241,3 +241,4 @@ document.querySelectorAll('input[type="text"]').forEach(input=>input.addEventLis
 
 </body>
 </html>
+
