@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -118,47 +116,15 @@ container.appendChild(section);
 <script>
 const { jsPDF }=window.jspdf;
 
-function loadPhoto(event, id) {
-    const box = document.getElementById('photo' + id);
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.onload = function() {
-                // --- MINIATURA REDUZIDA PARA EVITAR TRAVAMENTO ---
-                const maxWidth = 150; // largura máxima da miniatura
-                const maxHeight = 150; // altura máxima
-                let width = img.width;
-                let height = img.height;
-                if (width > height) {
-                    if (width > maxWidth) {
-                        height = Math.round(height * (maxWidth / width));
-                        width = maxWidth;
-                    }
-                } else {
-                    if (height > maxHeight) {
-                        width = Math.round(width * (maxHeight / height));
-                        height = maxHeight;
-                    }
-                }
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                // exibe miniatura
-                box.style.backgroundImage = `url('${canvas.toDataURL('image/jpeg',0.7)}')`;
-                box.textContent = '';
-                // --- SALVAR ORIGINAL PARA USAR NA HORA DO JPG ---
-                box.dataset.original = e.target.result;
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
+function loadPhoto(event,id){
+const box=document.getElementById('photo'+id);
+const file=event.target.files[0];
+if(file){
+const reader=new FileReader();
+reader.onload=function(e){ box.style.backgroundImage=`url('${e.target.result}')`; box.textContent=''; }
+reader.readAsDataURL(file);
 }
-
+}
 function removePhoto(id){
 const box = document.getElementById('photo' + id);
 box.style.backgroundImage = '';
@@ -235,8 +201,7 @@ const valInputId=fotos[j].replace('photo','');
 const inputValEl=document.getElementById(valInputId);
 const val=inputValEl?parseFloat(inputValEl.value.replace(',', '.')):null;
 if(box && box.style.backgroundImage){
-let imgUrl = box.dataset.original || box.style.backgroundImage.replace(/^url\(["']?/,'').replace(/["']?\)$/,'');
- const imgEl=new Image(); imgEl.src=imgUrl;
+let imgUrl=box.style.backgroundImage.replace(/^url\(["']?/,'').replace(/["']?\)$/,''); const imgEl=new Image(); imgEl.src=imgUrl;
 await new Promise(resolve=>imgEl.onload=resolve);
 ctxCil.drawImage(imgEl,pos[j][0],pos[j][1],imgSize/2,imgHeight/2);
 const rectWidth=imgSize/2; const rectHeight=40; const rectX=pos[j][0]; const rectY=pos[j][1]+imgHeight/2-rectHeight;
@@ -251,13 +216,8 @@ ctxCil.fillStyle="white"; ctxCil.fillRect(txtX,txtY,txtWidth,txtHeight); ctxCil.
 ctxCil.fillStyle="red"; ctxCil.fillText(desc,txtX+txtWidth/2,txtY+txtHeight/2);
 }
 // --- LIMPEZA DA FOTO NA TELA ---
-// --- LIMPEZA COMPLETA DA FOTO E MEMÓRIA ---
 box.style.backgroundImage = '';
 box.textContent = 'Clique para adicionar foto';
-delete box.dataset.original; // libera memória da imagem
-const input = box.querySelector('input[type="file"]');
-if(input) input.value = '';
-
 }
 }
 const numText=`CILINDRO ${i}`; ctxCil.font="bold 50px Arial"; const numWidth=ctxCil.measureText(numText).width; const numPadding=20; const rectHeight=60;
@@ -280,5 +240,4 @@ document.querySelectorAll('input[type="text"]').forEach(input=>input.addEventLis
 
 </body>
 </html>
-
 
