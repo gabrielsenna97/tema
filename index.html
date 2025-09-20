@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -250,8 +251,13 @@ ctxCil.fillStyle="white"; ctxCil.fillRect(txtX,txtY,txtWidth,txtHeight); ctxCil.
 ctxCil.fillStyle="red"; ctxCil.fillText(desc,txtX+txtWidth/2,txtY+txtHeight/2);
 }
 // --- LIMPEZA DA FOTO NA TELA ---
+// --- LIMPEZA COMPLETA DA FOTO E MEMÓRIA ---
 box.style.backgroundImage = '';
 box.textContent = 'Clique para adicionar foto';
+delete box.dataset.original; // libera memória da imagem
+const input = box.querySelector('input[type="file"]');
+if(input) input.value = '';
+
 }
 }
 const numText=`CILINDRO ${i}`; ctxCil.font="bold 50px Arial"; const numWidth=ctxCil.measureText(numText).width; const numPadding=20; const rectHeight=60;
